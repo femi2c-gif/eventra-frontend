@@ -22,7 +22,6 @@ const REGISTER_ENDPOINT =
 const ROUTES = {
   back: "../01_Welcome/index.html",
   signIn: "../09_Sign_In/index.html",
-  verifyAccount: "../03_Verify%20Account/index.html",
 };
 
 
@@ -426,19 +425,17 @@ async function registerUser() {
 
 
     // ========================================================
-    // SAVE VERIFICATION DETAILS
+    // HANDLE REGISTRATION RESPONSE
     // ========================================================
 
     const responseData = result.data || {};
 
-    if (responseData.verification_id) {
-
-      localStorage.setItem(
-        "eventra_verification_id",
-        responseData.verification_id
-      );
-
-    }
+    // Email verification/OTP has been removed from the active
+    // registration flow. Clear any old verification state so
+    // previous testing cannot redirect the user back into the
+    // retired verification flow.
+    localStorage.removeItem("eventra_verification_id");
+    localStorage.removeItem("eventra_email_verified");
 
     // Preserve tokens if the backend returns them at registration.
     if (responseData.access_token) {
@@ -472,11 +469,14 @@ async function registerUser() {
 
 
     // ========================================================
-    // GO TO VERIFICATION
+    // GO TO SIGN IN
     // ========================================================
 
+    // Email verification/OTP has been removed from the active
+    // registration flow. After a successful account creation,
+    // send the user directly to Sign In.
     navigateTo(
-      ROUTES.verifyAccount
+      ROUTES.signIn
     );
 
   } catch (error) {
