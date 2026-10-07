@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <title>Eventra - Order Summary</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        eventra: "#6428FF"
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef1f8;
+            color: #10213b;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        .page-content {
+            padding-bottom: 120px;
+        }
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        .eventra-app {
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #f7f8fe;
+            position: relative;
+        }
+
+        .checkout-content {
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+        }
+
+        .checkout-inner {
+            width: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+        }
+
+        .payment-footer {
+            width: 100%;
+            max-width: 430px;
+        }
+
+
+        /* =====================================================
+           DESKTOP
+        ====================================================== */
+
+        @media (min-width: 768px) {
+
+            .eventra-app {
+                max-width: 960px;
+            }
+
+            .checkout-content {
+                max-width: 960px;
+                padding-left: 50px;
+                padding-right: 50px;
+            }
+
+            .checkout-inner {
+                max-width: 860px;
+            }
+
+            .payment-footer {
+                max-width: 960px;
+            }
+
+            .page-content {
+                padding-bottom: 140px;
+            }
+        }
+
+
+        /* =====================================================
+           LARGE DESKTOP
+        ====================================================== */
+
+        @media (min-width: 1200px) {
+
+            .eventra-app {
+                max-width: 1000px;
+            }
+
+            .checkout-content {
+                max-width: 1000px;
+                padding-left: 60px;
+                padding-right: 60px;
+            }
+
+            .checkout-inner {
+                max-width: 880px;
+            }
+
+            .payment-footer {
+                max-width: 1000px;
+            }
+        }
+
+
+        /* =====================================================
+           EVENTRA CHECKBOX
+        ====================================================== */
+
+        .eventra-checkbox {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border: 2px solid #bfc7dc;
+            border-radius: 5px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .eventra-checkbox.checked {
+            background: #6428ff;
+            border-color: #6428ff;
+        }
+
+        .eventra-checkbox svg {
+            display: none;
+        }
+
+        .eventra-checkbox.checked svg {
+            display: block;
+        }
+
+        .checkbox-row {
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+<style>html,body,*{font-style:normal!important;}</style>
+</head>
+
+
+<body>
+
+    <main class="w-full min-h-screen">
+
+        <!-- =====================================================
+             EVENTRA APP
+        ====================================================== -->
+
+        <div class="eventra-app">
+
+
+            <!-- =================================================
+                 PAGE CONTENT
+            ================================================== -->
+
+            <div class="page-content">
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================== -->
+
+                <header
+                    class="
+                        h-[58px]
+                        px-5
+                        md:px-8
+                        flex
+                        items-center
+                        border-b
+                        border-[#E9ECF4]
+                        bg-[#F7F8FE]
+                    "
+                >
+
+                    <button
+                        id="backButton"
+                        type="button"
+                        class="
+                            w-9
+                            h-9
+                            rounded-full
+                            flex
+                            items-center
+                            justify-center
+                            active:scale-95
+                        "
+                        aria-label="Go back"
+                    >
+
+                        <svg
+                            width="21"
+                            height="21"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M19 12H5"></path>
+                            <path d="M12 19l-7-7 7-7"></path>
+                        </svg>
+
+                    </button>
+
+                </header>
+
+
+                <!-- =================================================
+                     CONTENT
+                ================================================== -->
+
+                <div class="checkout-content">
+
+                    <div class="checkout-inner pt-4 md:pt-6">
+
+
+                        <!-- =================================================
+                             RESERVED TIMER
+                        ================================================== -->
+
+                        <div
+    class="
+        w-[calc(100%-32px)]
+        mx-4
+        h-[43px]
+        rounded-full
+        bg-[#FFE0B1]
+        px-4
+        flex
+        items-center
+        justify-between
+        mb-6
+    "
+>
+
+                            <div class="flex items-center gap-2">
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#79520A"
+                                    stroke-width="2"
+                                >
+                                    <circle
+                                        cx="12"
+                                        cy="13"
+                                        r="8"
+                                    ></circle>
+
+                                    <path d="M12 9v4l2 2"></path>
+
+                                    <path d="M9 3h6"></path>
+                                </svg>
+
+                                <span
+                                    class="
+                                        text-[13px]
+                                        font-semibold
+                                        text-[#79520A]
+                                    "
+                                >
+                                    RESERVED FOR YOU
+                                </span>
+
+                            </div>
+
+
+                            <span
+                                id="timer"
+                                class="
+                                    text-[20px]
+                                    font-bold
+                                    text-[#79520A]
+                                "
+                            >
+                                09:19
+                            </span>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             STEP
+                        ================================================== -->
+
+                        <span
+    class="
+        ml-4
+        md:ml-5
+        text-[12px]
+        font-semibold
+        tracking-wide
+        text-[#5B20EA]
+    "
+>
+    STEP 1 OF 2
+</span>
+
+
+                            <span
+                                class="
+                                    bg-[#E5E8FB]
+                                    text-[#26324A]
+                                    px-3
+                                    py-2
+                                    rounded-full
+                                    text-[13px]
+                                    font-medium
+                                "
+                            >
+                                1 Item
+                            </span>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             TITLE
+                        ================================================== -->
+
+                        <h1
+    class="
+        ml-4
+        md:ml-5
+        text-[28px]
+        leading-[34px]
+        font-bold
+        text-[#10213B]
+        mb-5
+    "
+>
+    Order Summary
+</h1>
+
+                        <!-- =================================================
+                             EVENT CARD
+                        ================================================== -->
+
+                        <section
+                            class="
+                                bg-white
+                                rounded-[18px]
+                                p-4
+                                md:p-5
+                                shadow-[0_3px_15px_rgba(20,30,60,0.05)]
+                                mb-4
+                            "
+                        >
+
+                            <div class="flex gap-3 md:gap-5">
+
+                                <!-- IMAGE -->
+
+                                <div
+                                    class="
+                                        w-[108px]
+                                        h-[108px]
+                                        md:w-[125px]
+                                        md:h-[125px]
+                                        shrink-0
+                                        rounded-[12px]
+                                        overflow-hidden
+                                        relative
+                                        bg-gray-200
+                                    "
+                                >
+
+                                    <img
+                                        src="./Background.png"
+                                        alt="Tech Conference 2026"
+                                        class="
+                                            w-full
+                                            h-full
+                                            object-cover
+                                        "
+                                    >
+
+                                    <span
+                                        class="
+                                            absolute
+                                            top-2
+                                            left-2
+                                            bg-[#6428FF]
+                                            text-white
+                                            text-[12px]
+                                            font-semibold
+                                            px-2
+                                            py-1
+                                            rounded-[6px]
+                                        "
+                                    >
+                                        OCT 12
+                                    </span>
+
+                                </div>
+
+
+                                <!-- EVENT INFORMATION -->
+
+                                <div class="min-w-0 flex-1">
+
+                                    <p
+                                        class="
+                                            text-[13px]
+                                            font-semibold
+                                            text-[#6428FF]
+                                            mb-1
+                                        "
+                                    >
+                                        KEYNOTE EXPO
+                                    </p>
+
+
+                                    <h2
+                                        class="
+                                            text-[18px]
+                                            md:text-[20px]
+                                            leading-[23px]
+                                            md:leading-[26px]
+                                            font-bold
+                                            text-[#10213B]
+                                        "
+                                    id="checkoutEventTitle"
+                                    >
+                                        Tech Conference 2026
+                                    </h2>
+
+
+                                    <div
+                                        class="
+                                            flex
+                                            items-start
+                                            gap-2
+                                            mt-3
+                                        "
+                                    >
+
+                                        <svg
+                                            class="shrink-0 mt-[1px]"
+                                            width="17"
+                                            height="17"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#6428FF"
+                                            stroke-width="2"
+                                        >
+                                            <rect
+                                                x="3"
+                                                y="4"
+                                                width="18"
+                                                height="18"
+                                                rx="2"
+                                            ></rect>
+
+                                            <line
+                                                x1="16"
+                                                y1="2"
+                                                x2="16"
+                                                y2="6"
+                                            ></line>
+
+                                            <line
+                                                x1="8"
+                                                y1="2"
+                                                x2="8"
+                                                y2="6"
+                                            ></line>
+
+                                            <line
+                                                x1="3"
+                                                y1="10"
+                                                x2="21"
+                                                y2="10"
+                                            ></line>
+                                        </svg>
+
+
+                                        <span
+                                            class="
+                                                text-[13px]
+                                                leading-[18px]
+                                                text-[#505A70]
+                                            "
+                                        >
+                                            <span id="checkoutEventDate">Sat, Oct 12 • 10:00 AM WAT</span>
+                                        </span>
+
+                                    </div>
+
+
+                                    <div
+                                        class="
+                                            flex
+                                            items-start
+                                            gap-2
+                                            mt-1
+                                        "
+                                    >
+
+                                        <svg
+                                            class="shrink-0 mt-[1px]"
+                                            width="17"
+                                            height="17"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#64708A"
+                                            stroke-width="2"
+                                        >
+                                            <path
+                                                d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"
+                                            ></path>
+
+                                            <circle
+                                                cx="12"
+                                                cy="10"
+                                                r="2.5"
+                                            ></circle>
+                                        </svg>
+
+
+                                        <span
+                                            class="
+                                                text-[13px]
+                                                leading-[18px]
+                                                text-[#505A70]
+                                            "
+                                        >
+                                            <span id="checkoutEventVenue">Landmark Centre, Victoria Island</span>
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 TICKET DETAILS
+                            ================================================== -->
+
+                            <div
+                                id="ticketItemsContainer"
+                                class="mt-4 space-y-3"
+                            >
+
+                                <!-- Ticket items are populated from the selected passes. -->
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- =================================================
+                             PRIMARY ATTENDEE
+                        ================================================== -->
+
+                        <section
+                            class="
+                                bg-white
+                                rounded-[18px]
+                                p-4
+                                md:p-5
+                                mb-4
+                            "
+                        >
+
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    justify-between
+                                    mb-4
+                                "
+                            >
+
+                                <div
+                                    class="
+                                        flex
+                                        items-center
+                                        gap-3
+                                    "
+                                >
+
+                                    <div
+                                        class="
+                                            w-10
+                                            h-10
+                                            rounded-full
+                                            bg-[#E7DEFF]
+                                            flex
+                                            items-center
+                                            justify-center
+                                        "
+                                    >
+
+                                        <svg
+                                            width="21"
+                                            height="21"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#6428FF"
+                                            stroke-width="2"
+                                        >
+                                            <rect
+                                                x="3"
+                                                y="4"
+                                                width="18"
+                                                height="16"
+                                                rx="2"
+                                            ></rect>
+
+                                            <circle
+                                                cx="9"
+                                                cy="10"
+                                                r="2"
+                                            ></circle>
+
+                                            <path
+                                                d="M6 16c1-2 5-2 6 0"
+                                            ></path>
+                                        </svg>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <h2
+                                            class="
+                                                text-[17px]
+                                                font-bold
+                                                text-[#10213B]
+                                            "
+                                        >
+                                            Primary Attendee
+                                        </h2>
+
+                                        <p
+                                            class="
+                                                text-[12px]
+                                                text-[#5B6274]
+                                            "
+                                        >
+                                            Badge QR pass issued to this identity
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    class="
+                                        text-[14px]
+                                        font-semibold
+                                        text-[#6428FF]
+                                    "
+                                >
+                                    Edit
+                                </button>
+
+                            </div>
+
+
+                            <!-- FULL NAME -->
+
+                            <div
+                                class="
+                                    bg-[#EEF3FF]
+                                    rounded-[10px]
+                                    px-3
+                                    py-3
+                                    mb-3
+                                    flex
+                                    items-center
+                                    justify-between
+                                "
+                            >
+
+                                <div>
+
+                                    <p
+                                        class="
+                                            text-[11px]
+                                            uppercase
+                                            font-semibold
+                                            text-[#5C6374]
+                                        "
+                                    >
+                                        Full Name
+                                    </p>
+
+                                    <p
+                                        class="
+                                            text-[16px]
+                                            font-semibold
+                                            text-[#10213B]
+                                        "
+                                    >
+                                        <span id="attendeeFullName">John Doe</span>
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="
+                                        w-6
+                                        h-6
+                                        rounded-full
+                                        bg-[#6428FF]
+                                        text-white
+                                        flex
+                                        items-center
+                                        justify-center
+                                        text-[13px]
+                                    "
+                                >
+                                    ✓
+                                </span>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div
+                                class="
+                                    bg-[#EEF3FF]
+                                    rounded-[10px]
+                                    px-3
+                                    py-3
+                                    mb-3
+                                    flex
+                                    items-center
+                                    justify-between
+                                "
+                            >
+
+                                <div>
+
+                                    <p
+                                        class="
+                                            text-[11px]
+                                            uppercase
+                                            font-semibold
+                                            text-[#5C6374]
+                                        "
+                                    >
+                                        Email Address
+                                    </p>
+
+                                    <p
+                                        class="
+                                            text-[16px]
+                                            font-semibold
+                                            text-[#10213B]
+                                        "
+                                    >
+                                        <span id="attendeeEmail">john@example.com</span>
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="
+                                        w-6
+                                        h-6
+                                        rounded-full
+                                        bg-[#6428FF]
+                                        text-white
+                                        flex
+                                        items-center
+                                        justify-center
+                                        text-[13px]
+                                    "
+                                >
+                                    ✓
+                                </span>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div
+                                class="
+                                    bg-[#EEF3FF]
+                                    rounded-[10px]
+                                    px-3
+                                    py-3
+                                "
+                            >
+
+                                <p
+                                    class="
+                                        text-[11px]
+                                        uppercase
+                                        font-semibold
+                                        text-[#5C6374]
+                                    "
+                                >
+                                    Phone (WhatsApp Updates)
+                                </p>
+
+                                <p
+                                    class="
+                                        text-[16px]
+                                        font-semibold
+                                        text-[#10213B]
+                                    "
+                                >
+                                    +234 801 234 5678
+                                </p>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 ATTENDING CHECKBOX
+                            ================================================== -->
+
+                            <button
+                                id="attendingToggle"
+                                type="button"
+                                role="checkbox"
+                                aria-checked="true"
+                                class="
+                                    checkbox-row
+                                    mt-4
+                                    w-full
+                                    flex
+                                    items-center
+                                    gap-3
+                                    text-left
+                                    bg-transparent
+                                    border-0
+                                    p-0
+                                "
+                            >
+
+                                <span
+                                    id="attendingCheckboxVisual"
+                                    class="eventra-checkbox checked"
+                                >
+
+                                    <svg
+                                        width="15"
+                                        height="15"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="white"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <polyline
+                                            points="20 6 9 17 4 12"
+                                        ></polyline>
+                                    </svg>
+
+                                </span>
+
+
+                                <span
+                                    class="
+                                        text-[14px]
+                                        text-[#10213B]
+                                    "
+                                >
+                                    I am attending this event personally
+                                </span>
+
+                            </button>
+
+                        </section>
+
+
+                        <p
+                            id="checkoutMessage"
+                            class="hidden mb-3 px-1 text-[12px] font-medium text-red-500"
+                            role="alert"
+                        ></p>
+
+
+                        <!-- =================================================
+                             PROMO
+                        ================================================== -->
+
+                        <section
+                            class="
+                                bg-white
+                                rounded-[18px]
+                                p-4
+                                md:p-5
+                                mb-4
+                            "
+                        >
+
+                            <h2
+                                class="
+                                    text-[17px]
+                                    font-bold
+                                    text-[#10213B]
+                                    mb-3
+                                "
+                            >
+                                Promo or Student Voucher
+                            </h2>
+
+
+                            <div class="flex gap-2">
+
+                                <input
+                                    id="promoInput"
+                                    type="text"
+                                    placeholder="e.g. TECHFEST26"
+                                    class="
+                                        min-w-0
+                                        flex-1
+                                        h-[54px]
+                                        rounded-[10px]
+                                        bg-[#EEF3FF]
+                                        px-4
+                                        text-[14px]
+                                        outline-none
+                                        border
+                                        border-transparent
+                                        focus:border-[#6428FF]
+                                    "
+                                >
+
+
+                                <button
+                                    id="applyPromo"
+                                    type="button"
+                                    class="
+                                        w-[90px]
+                                        h-[54px]
+                                        rounded-[10px]
+                                        bg-[#DDE8FF]
+                                        text-[#10213B]
+                                        text-[14px]
+                                        font-semibold
+                                    "
+                                >
+                                    Apply
+                                </button>
+
+                            </div>
+
+
+                            <p
+                                id="promoMessage"
+                                class="
+                                    hidden
+                                    mt-2
+                                    text-[12px]
+                                "
+                            ></p>
+
+                        </section>
+
+
+                        <!-- =================================================
+                             PAYMENT BREAKDOWN
+                        ================================================== -->
+
+                        <section
+                            class="
+                                bg-white
+                                rounded-[18px]
+                                p-4
+                                md:p-5
+                                mb-4
+                            "
+                        >
+
+                            <h2
+                                class="
+                                    text-[18px]
+                                    font-bold
+                                    text-[#10213B]
+                                    mb-4
+                            "
+                            >
+                                Payment Breakdown
+                            </h2>
+
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    text-[14px]
+                                    mb-3
+                                "
+                            >
+
+                                <span class="text-[#555E73]">
+                                    Regular Pass
+                                    (x<span id="breakdownQuantity">1</span>)
+                                </span>
+
+
+                                <span
+                                    id="subtotal"
+                                    class="font-semibold"
+                                >
+                                    ₦15,000
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    text-[14px]
+                                    mb-3
+                                "
+                            >
+
+                                <span class="text-[#555E73]">
+                                    Service Processing
+                                </span>
+
+
+                                <span
+                                    id="serviceFee"
+                                    class="font-semibold"
+                                >
+                                    ₦1,500
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    text-[14px]
+                                    mb-4
+                                "
+                            >
+
+                                <span class="text-[#555E73]">
+                                    VAT (7.5%)
+                                </span>
+
+
+                                <span
+                                    id="vat"
+                                    class="font-semibold"
+                                >
+                                    ₦1,125
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    border-t
+                                    border-[#E2E7F2]
+                                    pt-4
+                                    flex
+                                    justify-between
+                                    items-end
+                                "
+                            >
+
+                                <div>
+
+                                    <p
+                                        class="
+                                            text-[20px]
+                                            font-bold
+                                            text-[#10213B]
+                                        "
+                                    >
+                                        Total Due
+                                    </p>
+
+                                    <p
+                                        class="
+                                            text-[13px]
+                                            text-[#555E73]
+                                        "
+                                    >
+                                        Includes all local taxes
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    id="totalDue"
+                                    class="
+                                        text-[25px]
+                                        font-bold
+                                        text-[#6428FF]
+                                    "
+                                >
+                                    ₦17,625
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    mt-4
+                                    h-[42px]
+                                    rounded-[9px]
+                                    bg-[#EEF3FF]
+                                    flex
+                                    items-center
+                                    justify-center
+                                    gap-3
+                                    text-[12px]
+                                    text-[#555E73]
+                                "
+                            >
+
+                                <span
+                                    class="
+                                        text-[#6428FF]
+                                        font-semibold
+                                    "
+                                >
+                                    ♢ Paystack Secure
+                                </span>
+
+                                <span>•</span>
+
+                                <span
+                                    class="
+                                        text-[#79520A]
+                                        font-semibold
+                                    "
+                                >
+                                    ⟳ 100% Refundable
+                                </span>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 FIXED FOOTER
+            ====================================================== -->
+
+            <footer
+                class="
+                    payment-footer
+                    fixed
+                    bottom-0
+                    left-1/2
+                    -translate-x-1/2
+                    bg-white
+                    border-t
+                    border-[#E5E8F0]
+                    px-4
+                    md:px-8
+                    lg:px-12
+                    py-3
+                    md:py-4
+                    z-50
+                    shadow-[0_-4px_20px_rgba(20,30,60,0.08)]
+                "
+            >
+
+                <div
+                    class="
+                        w-full
+                        max-w-[860px]
+                        mx-auto
+                        flex
+                        items-center
+                        justify-between
+                        gap-4
+                    "
+                >
+
+                    <div>
+
+                        <p
+                            class="
+                                text-[10px]
+                                uppercase
+                                font-semibold
+                                text-[#5C6374]
+                            "
+                        >
+                            Total Payable
+                        </p>
+
+
+                        <p
+                            id="footerTotal"
+                            class="
+                                text-[23px]
+                                leading-[27px]
+                                font-bold
+                                text-[#10213B]
+                            "
+                        >
+                            ₦17,625
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="proceedButton"
+                        type="button"
+                        class="
+                            min-w-[190px]
+                            md:min-w-[240px]
+                            h-[52px]
+                            rounded-full
+                            bg-[#6428FF]
+                            text-white
+                            text-[14px]
+                            font-semibold
+                            shadow-[0_7px_18px_rgba(100,40,255,0.28)]
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                        "
+                    >
+
+                        <span>
+                            Proceed to Payment
+                        </span>
+
+                        <span class="text-[20px]">
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </footer>
+
+        </div>
+
+    </main>
+
+
+    <script src="./script.js?v=20261007-booking-response-fix"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Eventra | Home</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+
+          fontFamily: {
+            sans: [
+              "Arial",
+              "Helvetica",
+              "sans-serif"
+            ]
+          },
+
+          colors: {
+            eventra: "#6230F5"
+          },
+
+          boxShadow: {
+            soft:
+              "0 4px 14px rgba(20, 24, 40, 0.08)"
+          }
+
+        }
+      }
+    };
+  </script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+
+      margin: 0;
+      padding: 0;
+
+      min-width: 320px;
+
+      background: #f8f9fd;
+
+      color: #172033;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-style: normal !important;
+
+      overflow-x: hidden;
+
+    }
+
+
+    *,
+    *::before,
+    *::after {
+
+      font-style: normal !important;
+
+    }
+
+
+    button,
+    input {
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-style: normal !important;
+
+    }
+
+
+    button {
+
+      cursor: pointer;
+
+      -webkit-tap-highlight-color:
+        transparent;
+
+    }
+
+
+    input::placeholder {
+
+      color: #94a3b8;
+
+      opacity: 1;
+
+    }
+
+
+    /* ==========================================
+       HORIZONTAL SCROLL
+    ========================================== */
+
+    .horizontal-scroll {
+
+      overflow-x: auto;
+
+      overflow-y: hidden;
+
+      white-space: nowrap;
+
+      -webkit-overflow-scrolling: touch;
+
+      overscroll-behavior-x: contain;
+
+      touch-action: pan-x;
+
+      scrollbar-width: none;
+
+      -ms-overflow-style: none;
+
+      cursor: grab;
+
+    }
+
+
+    .horizontal-scroll::-webkit-scrollbar {
+
+      display: none;
+
+    }
+
+
+    .horizontal-scroll.dragging {
+
+      cursor: grabbing;
+
+      user-select: none;
+
+    }
+
+
+    .vibe-chip {
+
+      flex: 0 0 auto;
+
+      white-space: nowrap;
+
+    }
+
+
+    /* ==========================================
+       EVENT IMAGE
+    ========================================== */
+
+    .event-image {
+
+      aspect-ratio: 16 / 8;
+
+      object-fit: cover;
+
+    }
+
+
+    /* ==========================================
+       HEART
+    ========================================== */
+
+    .heart-btn.active svg {
+
+      fill: #6230F5;
+
+      stroke: #6230F5;
+
+    }
+
+
+    /* ==========================================
+       VIBE CHIP ACTIVE
+    ========================================== */
+
+    .vibe-chip.active {
+
+      background: #ffffff;
+
+      border-color: #6230F5;
+
+      color: #172033;
+
+      box-shadow:
+        0 2px 8px
+        rgba(98, 48, 245, 0.08);
+
+    }
+
+
+    /* ==========================================
+       SEARCH
+    ========================================== */
+
+    .search-box:focus-within {
+
+      border-color: #d7ccff;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(98, 48, 245, 0.07);
+
+    }
+
+
+    /* ==========================================
+       BOTTOM NAV
+    ========================================== */
+
+    .bottom-nav {
+
+      padding-bottom:
+        env(safe-area-inset-bottom);
+
+    }
+
+
+    /* ==========================================
+       DESKTOP
+    ========================================== */
+
+    @media (min-width: 1024px) {
+
+      .desktop-event-grid {
+
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(0, 1fr)
+          );
+
+      }
+
+    }
+
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- ==================================================
+       APP
+  =================================================== -->
+
+  <div
+    id="app"
+    class="
+      min-h-[100svh]
+      w-full
+      bg-[#F8F9FD]
+    "
+  >
+
+
+    <!-- ==================================================
+         APP CONTAINER
+    =================================================== -->
+
+    <div
+      class="
+        mx-auto
+        min-h-[100svh]
+        w-full
+        max-w-[480px]
+        bg-white
+
+        sm:max-w-[620px]
+
+        lg:max-w-[1100px]
+
+        xl:max-w-[1240px]
+      "
+    >
+
+
+      <!-- ==================================================
+           HEADER
+      =================================================== -->
+
+      <header
+        class="
+          sticky
+          top-0
+          z-40
+          border-b
+          border-[#EDF0F5]
+          bg-white/95
+          px-4
+          pb-3
+          pt-4
+          backdrop-blur-md
+
+          sm:px-6
+          sm:pt-5
+
+          lg:px-8
+          lg:pb-4
+        "
+      >
+
+
+        <!-- TOP -->
+
+        <div
+          class="
+            flex
+            items-center
+            justify-between
+            gap-3
+          "
+        >
+
+
+          <!-- LOGO + LOCATION -->
+
+          <div
+            class="
+              flex
+              min-w-0
+              items-center
+              gap-2
+            "
+          >
+
+
+            <!-- LOGO -->
+
+            <a
+              href="./index.html"
+              class="shrink-0"
+            >
+
+              <img
+                src="./eventra_logo_colour.png"
+                alt="Eventra"
+                class="
+                  block
+                  h-auto
+                  w-[116px]
+                  object-contain
+
+                  sm:w-[130px]
+
+                  lg:w-[145px]
+                "
+              >
+
+            </a>
+
+
+            <!-- LOCATION -->
+
+            <button
+              id="locationBtn"
+              type="button"
+              class="
+                flex
+                shrink-0
+                items-center
+                gap-1
+                rounded-full
+                bg-[#F0F3F8]
+                px-2.5
+                py-2
+                text-[12px]
+                font-semibold
+                text-[#344054]
+
+                sm:px-3
+                sm:text-[13px]
+              "
+            >
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#6230F5"
+                stroke-width="2.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-4 w-4 shrink-0"
+              >
+
+                <path
+                  d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"
+                />
+
+                <circle
+                  cx="12"
+                  cy="10"
+                  r="2.5"
+                />
+
+              </svg>
+
+
+              <span id="locationText">
+                Lagos
+              </span>
+
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-3.5 w-3.5"
+              >
+
+                <path
+                  d="m6 9 6 6 6-6"
+                />
+
+              </svg>
+
+            </button>
+
+          </div>
+
+
+          <!-- RIGHT CONTROLS -->
+
+          <div
+            class="
+              flex
+              shrink-0
+              items-center
+              gap-3
+            "
+          >
+
+
+            <!-- NOTIFICATION -->
+
+            <button
+              id="notificationBtn"
+              type="button"
+              aria-label="Notifications"
+              class="
+                relative
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+                rounded-full
+                text-[#344054]
+                hover:bg-[#F5F5FA]
+                active:scale-95
+              "
+            >
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-6 w-6"
+              >
+
+                <path
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                />
+
+                <path
+                  d="M13.73 21a2 2 0 0 1-3.46 0"
+                />
+
+              </svg>
+
+
+              <span
+                class="
+                  absolute
+                  right-1
+                  top-1
+                  h-2.5
+                  w-2.5
+                  rounded-full
+                  bg-red-500
+                  ring-2
+                  ring-white
+                "
+              ></span>
+
+            </button>
+
+
+            <!-- PROFILE -->
+
+            <button
+              id="profileBtn"
+              type="button"
+              aria-label="Open profile"
+              class="
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+                rounded-full
+                bg-[#7140F7]
+                text-[12px]
+                font-bold
+                text-white
+                shadow-sm
+                active:scale-95
+              "
+            >
+
+              <span id="profileInitials">
+                JD
+              </span>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div
+          class="
+            search-box
+            mt-4
+            flex
+            h-[48px]
+            items-center
+            rounded-[14px]
+            border
+            border-transparent
+            bg-[#F0F4F9]
+            px-4
+            transition
+
+            sm:h-[52px]
+          "
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#91A0B5"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="mr-3 h-5 w-5 shrink-0"
+          >
+
+            <circle
+              cx="11"
+              cy="11"
+              r="7"
+            />
+
+            <path
+              d="m20 20-4-4"
+            />
+
+          </svg>
+
+
+          <input
+            id="searchInput"
+            type="search"
+            autocomplete="off"
+            placeholder="Search events, artists, venues..."
+            class="
+              h-full
+              w-full
+              bg-transparent
+              text-[15px]
+              font-normal
+              text-[#172033]
+              outline-none
+
+              sm:text-[16px]
+            "
+          >
+
+        </div>
+
+      </header>
+
+
+      <!-- ==================================================
+           MAIN
+      =================================================== -->
+
+      <main
+        class="
+          px-4
+          pb-[100px]
+          pt-5
+
+          sm:px-6
+          sm:pt-6
+
+          lg:px-8
+          lg:pb-12
+          lg:pt-7
+        "
+      >
+
+
+        <!-- ==================================================
+             VIBE PROFILE
+        =================================================== -->
+
+        <section
+          class="
+            rounded-[15px]
+            bg-white
+            px-4
+            py-4
+            shadow-soft
+
+            sm:px-5
+            sm:py-5
+
+            lg:px-6
+            lg:py-5
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-center
+              gap-2
+              text-[15px]
+              font-medium
+              uppercase
+              tracking-[0.2px]
+              text-[#344054]
+
+              sm:text-[16px]
+            "
+          >
+
+            <span>
+              ✹
+            </span>
+
+            <span>
+              VIBE PROFILE ACTIVE
+            </span>
+
+          </div>
+
+
+          <p
+            class="
+              mt-2
+              text-[18px]
+              font-normal
+              leading-[1.45]
+              text-[#344054]
+
+              sm:text-[19px]
+
+              lg:text-[20px]
+            "
+          >
+
+            Welcome,
+            <span id="welcomeName">
+              John
+            </span>!
+            ✨
+
+            <br>
+
+            Curated directly for your interests in Lagos.
+            Early bird access is live!
+
+          </p>
+
+        </section>
+
+
+        <!-- ==================================================
+             CURATED HEADER
+        =================================================== -->
+
+        <div id="curatedHeader"
+          class="
+            mt-6
+            flex
+            items-center
+            justify-between
+          "
+        >
+
+          <h2
+            class="
+              text-[17px]
+              font-normal
+              text-[#344054]
+
+              sm:text-[18px]
+            "
+          >
+
+            ✦ Curated For You
+
+          </h2>
+
+
+          <button
+            id="editVibeBtn"
+            type="button"
+            class="
+              text-[15px]
+              font-normal
+              text-[#344054]
+
+              sm:text-[16px]
+            "
+          >
+
+            Edit Vibe
+
+          </button>
+
+        </div>
+
+
+        <!-- ==================================================
+             VIBE CHIPS
+
+             IMPORTANT:
+             This is the section that was fixed.
+        =================================================== -->
+
+        <div
+          id="vibeContainer"
+          class="
+            horizontal-scroll
+            mt-3
+            flex
+            w-full
+            max-w-full
+            gap-2
+            pb-2
+            pr-8
+          "
+        >
+
+
+          <!-- ALL -->
+
+          <button
+            type="button"
+            data-vibe="all"
+            class="
+              vibe-chip
+              active
+              flex
+              h-[40px]
+              shrink-0
+              items-center
+              rounded-full
+              border
+              border-[#6230F5]
+              bg-white
+              px-4
+              text-[15px]
+              font-normal
+              text-[#344054]
+            "
+          >
+
+            ✦ All For You
+
+          </button>
+
+
+          <!-- AFROBEATS -->
+
+          <button
+            type="button"
+            data-vibe="music"
+            class="
+              vibe-chip
+              flex
+              h-[40px]
+              shrink-0
+              items-center
+              rounded-full
+              border
+              border-[#EEF0F4]
+              bg-white
+              px-4
+              text-[15px]
+              font-normal
+              text-[#344054]
+            "
+          >
+
+            🎵 Afrobeats
+
+          </button>
+
+
+          <!-- TECH -->
+
+          <button
+            type="button"
+            data-vibe="tech"
+            class="
+              vibe-chip
+              flex
+              h-[40px]
+              shrink-0
+              items-center
+              rounded-full
+              border
+              border-[#EEF0F4]
+              bg-white
+              px-4
+              text-[15px]
+              font-normal
+              text-[#344054]
+            "
+          >
+
+            💼 Tech &amp; Startups
+
+          </button>
+
+
+          <!-- EXTRA SPACE AFTER LAST CHIP -->
+
+          <span
+            class="
+              block
+              h-1
+              w-4
+              shrink-0
+            "
+          ></span>
+
+        </div>
+
+
+        <!-- ==================================================
+             FEATURED EVENT
+        =================================================== -->
+
+        <section
+          id="featuredEvent"
+          class="
+            mt-5
+            overflow-hidden
+            rounded-[17px]
+            bg-white
+            shadow-soft
+          "
+        >
+
+          <div
+            class="
+              relative
+              overflow-hidden
+            "
+          >
+
+            <img
+              id="featuredEventImage"
+              src="./Event Visual.png"
+              alt="Featured Event"
+              class="
+                event-image
+                block
+                w-full
+              "
+            >
+
+
+            <div
+              class="
+                absolute
+                inset-0
+                bg-gradient-to-t
+                from-black/75
+                via-black/10
+                to-transparent
+              "
+            ></div>
+
+
+            <div
+              class="
+                absolute
+                left-4
+                top-4
+                text-[15px]
+                font-normal
+                text-white
+              "
+            >
+
+              ◉ 98% Match
+
+            </div>
+
+
+            <div
+              class="
+                absolute
+                left-1/2
+                top-4
+                -translate-x-1/2
+                whitespace-nowrap
+                text-[15px]
+                font-normal
+                text-white
+              "
+            >
+
+              🔥 Selling Fast
+
+            </div>
+
+
+            <button
+              type="button"
+              aria-label="Favourite featured event"
+              class="
+                heart-btn
+                absolute
+                right-3
+                top-3
+                flex
+                h-10
+                w-10
+                items-center
+                justify-center
+                rounded-full
+                bg-black/30
+                text-white
+                backdrop-blur-sm
+              "
+            >
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-6 w-6"
+              >
+
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                />
+
+              </svg>
+
+            </button>
+
+
+            <div
+              class="
+                absolute
+                bottom-4
+                left-4
+                right-4
+              "
+            >
+
+              <p
+                class="
+                  text-[13px]
+                  font-medium
+                  text-white/90
+                "
+              >
+
+                TOP PICK FOR YOU
+
+              </p>
+
+
+              <p
+                class="
+                  mt-1
+                  text-[17px]
+                  font-semibold
+                  text-white
+                "
+              >
+
+                <span id="featuredEventTitle">Afrobeats Festival 2026</span>
+
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="
+              flex
+              items-center
+              justify-between
+              gap-3
+              px-4
+              py-4
+
+              sm:px-5
+              sm:py-5
+            "
+          >
+
+            <div
+              class="
+                flex
+                min-w-0
+                items-start
+                gap-3
+              "
+            >
+
+              <div
+                class="
+                  w-[48px]
+                  shrink-0
+                  text-center
+                "
+              >
+
+                <p
+                  class="
+                    text-[15px]
+                    font-bold
+                    uppercase
+                    text-[#344054]
+                  "
+                >
+
+                  <span id="featuredEventMonth">OCT</span>
+
+                </p>
+
+
+                <p
+                  class="
+                    text-[20px]
+                    font-bold
+                    leading-5
+                    text-[#344054]
+                  "
+                >
+
+                  <span id="featuredEventDay">12</span>
+
+                </p>
+
+              </div>
+
+
+              <div
+                class="min-w-0"
+              >
+
+                <h3
+                  class="
+                    text-[17px]
+                    font-bold
+                    leading-6
+                    text-[#344054]
+
+                    sm:text-[18px]
+                  "
+                >
+
+                  <span id="featuredEventVenue">Eko Convention Centre, Lagos</span>
+
+                </h3>
+
+
+                <p
+                  class="
+                    mt-1
+                    text-[15px]
+                    text-[#344054]
+                  "
+                >
+
+                  <span id="featuredEventTime">Saturday • 6:00 PM onwards</span>
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <button
+              id="featuredTicketsBtn"
+              type="button"
+              class="
+                shrink-0
+                rounded-[12px]
+                border
+                border-[#F0F1F4]
+                bg-white
+                px-4
+                py-3
+                text-[15px]
+                font-normal
+                text-[#344054]
+                shadow-sm
+                active:scale-95
+              "
+            >
+
+              Tickets
+
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             EARLY BIRD
+        =================================================== -->
+
+        <section
+          class="
+            mt-5
+            rounded-[16px]
+            bg-white
+            px-4
+            py-5
+            shadow-soft
+
+            sm:px-5
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-start
+              justify-between
+              gap-4
+            "
+          >
+
+            <div
+              class="
+                flex
+                items-start
+                gap-3
+              "
+            >
+
+              <span class="mt-1 text-[18px]">
+                ⚡
+              </span>
+
+
+              <div>
+
+                <p
+                  class="
+                    text-[17px]
+                    font-normal
+                    leading-6
+                    text-[#344054]
+                  "
+                >
+
+                  Early Bird Priority Drop
+
+                </p>
+
+
+                <p
+                  class="
+                    text-[17px]
+                    font-normal
+                    leading-6
+                    text-[#344054]
+                  "
+                >
+
+                  Unlocked via John's Alerts
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="
+                flex
+                shrink-0
+                items-start
+                gap-1
+                text-[15px]
+                text-[#344054]
+              "
+            >
+
+              <span>
+                ◷
+              </span>
+
+              <span>
+                04h :<br>
+                22m
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="
+              mt-6
+              flex
+              items-center
+              gap-3
+            "
+          >
+
+            <img
+              id="priorityEventImage"
+              src="./Tech Conference 2026.png"
+              alt="Priority event"
+              class="
+                h-[58px]
+                w-[58px]
+                shrink-0
+                rounded-[10px]
+                object-cover
+              "
+            >
+
+
+            <div
+              class="
+                min-w-0
+                flex-1
+              "
+            >
+
+              <p
+                class="
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-wide
+                  text-[#344054]
+                "
+              >
+
+                4 SEATS LEFT
+
+              </p>
+
+
+              <h3
+                class="
+                  mt-1
+                  truncate
+                  text-[17px]
+                  font-bold
+                  text-[#344054]
+                "
+              >
+
+                <span id="priorityEventTitle">Tech Conference 2026</span>
+
+              </h3>
+
+
+              <p
+                class="
+                  mt-1
+                  text-[16px]
+                  text-[#344054]
+                "
+              >
+
+                <span id="priorityEventVenue">Landmark Centre, Lagos</span>
+
+              </p>
+
+            </div>
+
+
+            <div
+              class="
+                shrink-0
+                text-right
+              "
+            >
+
+              <p
+                class="
+                  text-[15px]
+                  text-[#344054]
+                  line-through
+                "
+              >
+
+                ₦25,000
+
+              </p>
+
+
+              <p
+                class="
+                  text-[17px]
+                  font-bold
+                  text-[#344054]
+                "
+              >
+
+                <span id="priorityEventPrice">₦15,000</span>
+
+              </p>
+
+
+              <button
+                id="claimBtn"
+                type="button"
+                class="
+                  mt-1
+                  text-[16px]
+                  font-normal
+                  text-[#344054]
+                "
+              >
+
+                Claim
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             TRENDING
+        =================================================== -->
+
+        <section class="mt-7">
+
+
+          <div
+            class="
+              flex
+              items-start
+              justify-between
+              gap-4
+            "
+          >
+
+            <div>
+
+              <h2
+                class="
+                  text-[18px]
+                  font-normal
+                  text-[#344054]
+
+                  sm:text-[19px]
+                "
+              >
+
+                Trending in Lagos
+
+              </h2>
+
+
+              <p
+                class="
+                  mt-1
+                  max-w-[250px]
+                  text-[17px]
+                  leading-6
+                  text-[#344054]
+                "
+              >
+
+                Matched with your live vibe preferences
+
+              </p>
+
+            </div>
+
+
+            <button
+              id="seeAllBtn"
+              type="button"
+              class="
+                shrink-0
+                pt-1
+                text-[16px]
+                font-semibold
+                leading-6
+                text-[#344054]
+              "
+            >
+
+              See All
+              <br>
+              (120)
+
+            </button>
+
+          </div>
+
+
+          <div
+            id="trendingEvents"
+            class="
+              mt-4
+              flex
+              flex-col
+              gap-3
+            "
+          ></div>
+
+        </section>
+
+
+        <!-- ==================================================
+             HOTSPOTS
+        =================================================== -->
+
+        <section
+          id="exploreNearbySection"
+          class="
+            mt-7
+            overflow-hidden
+            rounded-[17px]
+            bg-white
+            p-4
+            shadow-soft
+
+            sm:p-5
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-start
+              justify-between
+              gap-4
+            "
+          >
+
+            <div
+              class="
+                flex
+                items-start
+                gap-3
+              "
+            >
+
+              <span class="mt-0.5 text-[18px]">
+                🗺
+              </span>
+
+
+              <p
+                class="
+                  text-[17px]
+                  leading-6
+                  text-[#344054]
+                "
+              >
+
+                Hotspots in Victoria
+                <br>
+                Island
+
+              </p>
+
+            </div>
+
+
+            <p
+              class="
+                text-[17px]
+                leading-6
+                text-[#344054]
+              "
+            >
+
+              8 Events within
+              <br>
+              5km
+
+            </p>
+
+          </div>
+
+
+          <button
+            id="exploreMapBtn"
+            type="button"
+            class="
+              relative
+              mt-4
+              h-[145px]
+              w-full
+              overflow-hidden
+              rounded-[13px]
+              bg-[#9ADDEA]
+              text-center
+
+              sm:h-[175px]
+            "
+          >
+
+            <div
+              class="
+                absolute
+                inset-0
+                opacity-80
+              "
+              style="
+                background-image:
+                  linear-gradient(
+                    25deg,
+                    transparent 0 30%,
+                    rgba(255,255,255,.7) 31% 33%,
+                    transparent 34% 50%,
+                    rgba(255,255,255,.75) 51% 53%,
+                    transparent 54%
+                  ),
+                  linear-gradient(
+                    110deg,
+                    transparent 0 40%,
+                    rgba(255,255,255,.65) 41% 43%,
+                    transparent 44%
+                  );
+              "
+            ></div>
+
+
+            <div
+              class="
+                absolute
+                left-[20%]
+                top-[25%]
+                h-2
+                w-2
+                rounded-full
+                bg-[#6230F5]
+              "
+            ></div>
+
+
+            <div
+              class="
+                absolute
+                left-[63%]
+                top-[45%]
+                h-2.5
+                w-2.5
+                rounded-full
+                bg-[#6230F5]
+              "
+            ></div>
+
+
+            <div
+              class="
+                absolute
+                bottom-[25%]
+                right-[22%]
+                h-2
+                w-2
+                rounded-full
+                bg-[#6230F5]
+              "
+            ></div>
+
+
+            <span
+              class="
+                relative
+                z-10
+                text-[20px]
+                font-medium
+                text-[#344054]
+
+                sm:text-[22px]
+              "
+            >
+
+              Explore Events Near You
+
+            </span>
+
+          </button>
+
+        </section>
+
+      </main>
+
+
+      <!-- ==================================================
+           BOTTOM NAVIGATION
+      =================================================== -->
+
+      <nav
+        class="
+          bottom-nav
+          fixed
+          bottom-0
+          left-1/2
+          z-50
+          w-full
+          max-w-[480px]
+          -translate-x-1/2
+          border-t
+          border-[#ECEEF4]
+          bg-white/95
+          backdrop-blur-md
+
+          sm:max-w-[620px]
+
+          lg:static
+          lg:mx-auto
+          lg:max-w-none
+          lg:px-8
+        "
+      >
+
+        <div
+          class="
+            mx-auto
+            grid
+            max-w-[480px]
+            grid-cols-5
+            px-2
+            py-2
+
+            lg:max-w-[700px]
+          "
+        >
+
+
+          <!-- HOME -->
+
+          <button
+            type="button"
+            data-nav="home"
+            class="
+              nav-btn
+              flex
+              flex-col
+              items-center
+              gap-1
+              text-[#6230F5]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="h-6 w-6"
+            >
+
+              <path
+                d="M3 10.8 12 3l9 7.8V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.2Z"
+              />
+
+            </svg>
+
+
+            <span class="text-[11px] font-semibold">
+              Home
+            </span>
+
+          </button>
+
+
+          <!-- DISCOVER -->
+
+          <button
+            type="button"
+            data-nav="discover"
+            class="
+              nav-btn
+              flex
+              flex-col
+              items-center
+              gap-1
+              text-[#98A4B8]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="h-6 w-6"
+            >
+
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+              />
+
+              <path
+                d="m20 20-4-4"
+              />
+
+            </svg>
+
+
+            <span class="text-[11px]">
+              Discover
+            </span>
+
+          </button>
+
+
+          <!-- TICKETS -->
+
+          <button
+            type="button"
+            data-nav="tickets"
+            class="
+              nav-btn
+              flex
+              flex-col
+              items-center
+              gap-1
+              text-[#98A4B8]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              class="h-6 w-6"
+            >
+
+              <path
+                d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 1 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 1 0 0-4V7Z"
+              />
+
+              <path
+                d="M9 8v8"
+              />
+
+            </svg>
+
+
+            <span class="text-[11px]">
+              Tickets
+            </span>
+
+          </button>
+
+
+          <!-- NOTIFICATIONS -->
+
+          <button
+            type="button"
+            data-nav="notifications"
+            class="
+              nav-btn
+              flex
+              flex-col
+              items-center
+              gap-1
+              text-[#98A4B8]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-6 w-6"
+            >
+
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+              />
+
+              <path
+                d="M13.73 21a2 2 0 0 1-3.46 0"
+              />
+
+            </svg>
+
+
+            <span class="text-[11px]">
+              Notifications
+            </span>
+
+          </button>
+
+
+          <!-- PROFILE -->
+
+          <button
+            type="button"
+            data-nav="profile"
+            class="
+              nav-btn
+              flex
+              flex-col
+              items-center
+              gap-1
+              text-[#98A4B8]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-6 w-6"
+            >
+
+              <circle
+                cx="12"
+                cy="8"
+                r="4"
+              />
+
+              <path
+                d="M4 21a8 8 0 0 1 16 0"
+              />
+
+            </svg>
+
+
+            <span class="text-[11px]">
+              Profile
+            </span>
+
+          </button>
+
+        </div>
+
+      </nav>
+
+    </div>
+
+  </div>
+
+
+  <!-- JAVASCRIPT -->
+
+  <script src="./script.js"></script>
+
+  <script src="../eventra-web-nav.js"></script>
+</body>
+
+</html>

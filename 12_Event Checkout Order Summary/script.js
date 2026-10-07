@@ -4,8 +4,14 @@
 ============================================================ */
 
 const API_BASE_URL = "https://eventra-backend-aidf.onrender.com/api";
-const SERVICE_FEE_RATE = 0.10;
-const VAT_RATE = 0.075;
+/*
+ * The current backend booking contract calculates and stores the payable
+ * amount from the selected ticket prices. It does not return separate
+ * service-fee/VAT fields. Therefore the frontend must not invent additional
+ * charges that Paystack will not receive.
+ */
+const SERVICE_FEE_RATE = 0;
+const VAT_RATE = 0;
 
 let attendingPersonally = true;
 let reservationSeconds = 9 * 60 + 19;
@@ -146,8 +152,8 @@ function renderTicketItems() {
 function updateOrderSummary() {
   const totals = calculateTotals();
   if (subtotalElement) subtotalElement.textContent = formatCurrency(totals.subtotal);
-  if (serviceFeeElement) serviceFeeElement.textContent = formatCurrency(totals.serviceFee);
-  if (vatElement) vatElement.textContent = formatCurrency(totals.vat);
+  if (serviceFeeElement) serviceFeeElement.textContent = totals.serviceFee > 0 ? formatCurrency(totals.serviceFee) : "Included";
+  if (vatElement) vatElement.textContent = totals.vat > 0 ? formatCurrency(totals.vat) : "Included";
   if (totalDueElement) totalDueElement.textContent = formatCurrency(totals.total);
   if (footerTotalElement) footerTotalElement.textContent = formatCurrency(totals.total);
 }
@@ -321,9 +327,16 @@ if (proceedButton) {
         data?.booking_id ||
         result?.booking_id ||
         "";
+      // The booking response is the server-side source of truth for the amount
+      // that must be paid. The current backend returns this as `total_price`.
+      // Do not fall back to a frontend-calculated fee/VAT amount when the
+      // backend has already created the booking.
       const backendTotal = Number(
-        booking.final_amount ??
-        booking.total_amount ??
+        booking?.total_price ??
+        booking?.final_amount ??
+        booking?.total_amount ??
+        data?.total_price ??
+        result?.data?.total_price ??
         result?.data?.total_amount ??
         result?.data?.final_amount ??
         0
@@ -334,13 +347,63 @@ if (proceedButton) {
       }
 
       const totals = calculateTotals();
+      const payableTotal = backendTotal > 0 ? backendTotal : totals.total;
+      // Build a real ticket snapshot from the booking response. This is used
+      // by Payment Success and Digital Ticket so the flow does not depend on
+      // a second ticket lookup immediately after checkout.
+      const eventObject = booking?.Event || booking?.event || data?.Event || data?.event || {};
+      const eventTicketTypes = eventObject?.TicketTypes || eventObject?.ticket_types || eventObject?.ticketTypes || [];
+      const attendee = getStoredUser();
+      const firstTicket = Array.isArray(tickets) && tickets.length ? tickets[0] : null;
+      const firstItem = selectedItems.find(item => String(item.ticket_type_id) === String(firstTicket?.ticket_type_id)) || selectedItems[0] || {};
+      const matchedType = eventTicketTypes.find(type => String(type?.id) === String(firstTicket?.ticket_type_id || firstItem?.ticket_type_id)) || {};
+      const eventStart = eventObject?.start_date || eventObject?.startDate || "";
+      const eventEnd = eventObject?.end_date || eventObject?.endDate || "";
+      const formatEventDate = value => {
+        if (!value) return "";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return String(value);
+        return d.toLocaleDateString("en-NG", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+      };
+      const formatEventTime = (start, end) => {
+        if (!start) return "";
+        const opts = { hour: "numeric", minute: "2-digit", hour12: true };
+        const a = new Date(start);
+        if (Number.isNaN(a.getTime())) return "";
+        const first = a.toLocaleTimeString("en-NG", opts);
+        if (!end) return `${first} WAT`;
+        const b = new Date(end);
+        if (Number.isNaN(b.getTime())) return `${first} WAT`;
+        return `${first} – ${b.toLocaleTimeString("en-NG", opts)} WAT`;
+      };
+      const fullName = [attendee.first_name, attendee.last_name].filter(Boolean).join(" ") || attendee.name || "Attendee";
+      const digitalTicket = firstTicket ? {
+        id: firstTicket.id || firstTicket.ticket_id || "",
+        ticket_code: firstTicket.ticket_code || firstTicket.ticketCode || "",
+        qr_code_url: firstTicket.qr_code_url || firstTicket.qrCodeUrl || "",
+        status: firstTicket.status || "valid",
+        attendee_name: fullName,
+        ticket_type: matchedType?.name || firstTicket.ticket_type_name || firstItem.ticket_type_name || "Ticket",
+        quantity: Number(firstTicket.quantity || firstItem.quantity || 1),
+        event_name: eventObject?.title || eventObject?.name || sessionStorage.getItem("eventra_checkout_event_title") || "Eventra Event",
+        event_category: eventObject?.category || "EVENTRA",
+        venue: eventObject?.venue_name || eventObject?.venue || "",
+        address: eventObject?.venue_address || eventObject?.address || "",
+        date: formatEventDate(eventStart),
+        time: formatEventTime(eventStart, eventEnd),
+        gate: "General Entry",
+        seat: "General Admission",
+        organizer: eventObject?.organizer_name || "Eventra Organizer"
+      } : null;
+
       const order = {
         event_id: eventId,
         items: selectedItems,
         subtotal: totals.subtotal,
         service_fee: totals.serviceFee,
         vat: totals.vat,
-        total: backendTotal || totals.total,
+        // This is the exact amount that will be sent to Paystack.
+        total: payableTotal,
         attending_personally: attendingPersonally,
         promo_code: promoCode,
         attendee: {
@@ -355,7 +418,12 @@ if (proceedButton) {
       sessionStorage.setItem("eventra_checkout", JSON.stringify(order));
       sessionStorage.setItem("eventra_booking_id", String(bookingId));
       sessionStorage.setItem("eventra_booking_data", JSON.stringify(result));
+      if (digitalTicket?.id) {
+        sessionStorage.setItem("eventra_digital_ticket", JSON.stringify(digitalTicket));
+        localStorage.setItem("eventra_digital_ticket", JSON.stringify(digitalTicket));
+      }
       sessionStorage.setItem("eventra_checkout_total", String(order.total));
+      sessionStorage.setItem("eventra_payable_amount", String(order.total));
 
       if (tickets[0]?.id) {
         sessionStorage.setItem("eventra_selected_ticket_id", String(tickets[0].id));

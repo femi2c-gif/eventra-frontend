@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Eventra - Account Verified</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+
+    tailwind.config = {
+
+      theme: {
+
+        extend: {
+
+          fontFamily: {
+
+            sans: [
+              "Arial",
+              "Helvetica",
+              "sans-serif"
+            ]
+
+          },
+
+          colors: {
+
+            eventra: "#6230F5"
+
+          }
+
+        }
+
+      }
+
+    };
+
+  </script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-style: normal !important;
+
+      background: #f8f9fe;
+
+      color: #101a33;
+    }
+
+    *,
+    *::before,
+    *::after {
+      font-style: normal !important;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-style: normal !important;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    /* =====================================================
+       INTEREST BUTTON
+       ===================================================== */
+
+    .interest-btn {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      min-height: 38px;
+
+      width: fit-content;
+
+      max-width: 100%;
+
+      padding: 5px 9px;
+
+      border-radius: 9px;
+
+      background: #ffffff;
+
+      color: #101a33;
+
+      font-size: 12px;
+
+      font-weight: 500;
+
+      line-height: 1;
+
+      border: none;
+
+      cursor: pointer;
+
+      transition:
+        background-color 0.2s ease,
+        transform 0.15s ease;
+
+    }
+
+
+    .interest-btn:active {
+      transform: scale(0.98);
+    }
+
+
+    .interest-btn.selected {
+
+      background: #6230f5;
+
+      color: #ffffff;
+
+    }
+
+
+    /* =====================================================
+       INTEREST ICON
+       ===================================================== */
+
+    .interest-icon {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      width: 29px;
+
+      height: 29px;
+
+      flex-shrink: 0;
+
+      margin-right: 7px;
+
+      border-radius: 7px;
+
+      background: #e8eeff;
+
+      font-size: 14px;
+
+      line-height: 1;
+
+    }
+
+
+    .interest-btn.selected .interest-icon {
+
+      background:
+        rgba(255, 255, 255, 0.16);
+
+    }
+
+
+    /* =====================================================
+       INTEREST STATUS
+       ===================================================== */
+
+    .interest-status {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      width: 17px;
+
+      height: 17px;
+
+      flex-shrink: 0;
+
+      margin-left: 6px;
+
+      border: 1px solid #cbd0dc;
+
+      border-radius: 50%;
+
+      color: #8c93a5;
+
+      font-size: 11px;
+
+      font-weight: 600;
+
+      line-height: 1;
+
+    }
+
+
+    .interest-btn.selected .interest-status {
+
+      background: #ffffff;
+
+      border-color: #ffffff;
+
+      color: #6230f5;
+
+    }
+
+
+    /* =====================================================
+       CITY BUTTON
+       ===================================================== */
+
+    .city-btn {
+
+      display: flex;
+
+      align-items: center;
+
+      min-height: 36px;
+
+      padding: 7px 12px;
+
+      border: none;
+
+      border-radius: 9px;
+
+      background: #ffffff;
+
+      color: #343a4a;
+
+      font-size: 11px;
+
+      font-weight: 500;
+
+      cursor: pointer;
+
+      text-align: left;
+
+      transition:
+        background-color 0.2s ease,
+        transform 0.15s ease;
+
+    }
+
+
+    .city-btn:active {
+
+      transform: scale(0.98);
+
+    }
+
+
+    .city-btn::before {
+
+      content: "";
+
+      width: 7px;
+
+      height: 7px;
+
+      flex-shrink: 0;
+
+      margin-right: 7px;
+
+      border-radius: 50%;
+
+      background: #d7d5e2;
+
+    }
+
+
+    .city-btn.selected {
+
+      background: #e8e1ff;
+
+      color: #38217a;
+
+    }
+
+
+    .city-btn.selected::before {
+
+      background: #6230f5;
+
+    }
+
+
+    /* =====================================================
+       TABLET
+       ===================================================== */
+
+    @media (min-width: 640px) {
+
+      .interest-btn {
+
+        min-height: 42px;
+
+        padding: 6px 11px;
+
+        font-size: 13px;
+
+      }
+
+
+      .interest-icon {
+
+        width: 32px;
+
+        height: 32px;
+
+        margin-right: 8px;
+
+        font-size: 15px;
+
+      }
+
+
+      .interest-status {
+
+        width: 18px;
+
+        height: 18px;
+
+        font-size: 11px;
+
+      }
+
+
+      .city-btn {
+
+        min-height: 40px;
+
+        font-size: 12px;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       DESKTOP
+       ===================================================== */
+
+    @media (min-width: 1024px) {
+
+      .interest-btn {
+
+        min-height: 44px;
+
+        font-size: 14px;
+
+      }
+
+
+      .interest-icon {
+
+        width: 34px;
+
+        height: 34px;
+
+      }
+
+
+      .city-btn {
+
+        min-height: 42px;
+
+        font-size: 13px;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       SHORT MOBILE SCREENS
+       ===================================================== */
+
+    @media (max-height: 700px) and (max-width: 639px) {
+
+      .screen-content {
+
+        padding-top: 8px;
+
+        padding-bottom: 24px;
+
+      }
+
+      .verified-icon {
+
+        width: 48px !important;
+
+        height: 48px !important;
+
+      }
+
+      .main-title {
+
+        font-size: 20px !important;
+
+        line-height: 24px !important;
+
+      }
+
+      .description {
+
+        font-size: 11px !important;
+
+        line-height: 15px !important;
+
+      }
+
+      .interest-btn {
+
+        min-height: 34px;
+
+      }
+
+      .interest-icon {
+
+        width: 27px;
+
+        height: 27px;
+
+      }
+
+      .city-btn {
+
+        min-height: 32px;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <!-- =====================================================
+       MAIN APP
+       ===================================================== -->
+
+  <main
+    class="
+      min-h-[100svh]
+      w-full
+      bg-[#F8F9FE]
+    "
+  >
+
+    <!-- ===================================================
+         APP CONTAINER
+         =================================================== -->
+
+    <div
+      class="
+        mx-auto
+        w-full
+        max-w-[480px]
+        min-h-[100svh]
+        bg-[#F8F9FE]
+
+        md:max-w-[620px]
+
+        lg:max-w-[760px]
+      "
+    >
+
+
+      <!-- =================================================
+           TOP BAR
+           ================================================= -->
+
+      <header
+        class="
+          flex
+          h-[52px]
+          items-center
+          border-b
+          border-[#ECEEF5]
+          px-4
+
+          sm:h-[58px]
+          sm:px-6
+
+          md:h-[64px]
+          md:px-8
+        "
+      >
+
+        <button
+          id="backBtn"
+          type="button"
+          aria-label="Go back"
+          class="
+            flex
+            h-10
+            w-10
+            items-center
+            justify-start
+            rounded-full
+            text-[#17223D]
+            active:scale-95
+          "
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-6 w-6"
+          >
+
+            <path d="M19 12H5"></path>
+
+            <path d="M12 19l-7-7 7-7"></path>
+
+          </svg>
+
+        </button>
+
+      </header>
+
+
+      <!-- =================================================
+           CONTENT
+           ================================================= -->
+
+      <section
+        class="
+          screen-content
+          px-4
+          pb-7
+          pt-3
+
+          sm:px-6
+          sm:pt-5
+
+          md:px-8
+          md:pt-7
+        "
+      >
+
+
+        <!-- =================================================
+             VERIFIED ICON
+             ================================================= -->
+
+        <div class="flex justify-center">
+
+          <div
+            class="
+              verified-icon
+              flex
+              h-[56px]
+              w-[56px]
+              items-center
+              justify-center
+              rounded-full
+              bg-[#6230F5]
+              shadow-[0_7px_20px_rgba(98,48,245,0.25)]
+
+              sm:h-[64px]
+              sm:w-[64px]
+
+              md:h-[70px]
+              md:w-[70px]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="
+                h-8
+                w-8
+
+                sm:h-9
+                sm:w-9
+              "
+            >
+
+              <path d="M20 6L9 17l-5-5"></path>
+
+            </svg>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             VERIFIED BADGE
+             ================================================= -->
+
+        <div class="mt-2 flex justify-center">
+
+          <div
+            class="
+              flex
+              h-[22px]
+              items-center
+              rounded-full
+              bg-[#E5EBFF]
+              px-3
+              text-[10px]
+              font-medium
+              text-[#4B5269]
+            "
+          >
+
+            <span
+              class="
+                mr-1.5
+                h-[6px]
+                w-[6px]
+                rounded-full
+                bg-[#6230F5]
+              "
+            ></span>
+
+            Identity Verified
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TITLE
+             ================================================= -->
+
+        <h1
+          class="
+            main-title
+            mt-1
+            text-center
+            text-[22px]
+            font-bold
+            leading-[27px]
+            tracking-[-0.4px]
+            text-[#101A33]
+
+            sm:text-[24px]
+            sm:leading-7
+
+            md:text-[27px]
+          "
+        >
+
+          Account Verified!
+
+        </h1>
+
+
+        <!-- =================================================
+             DESCRIPTION
+             ================================================= -->
+
+        <p
+          class="
+            description
+            mx-auto
+            mt-1
+            max-w-[320px]
+            text-center
+            text-[12px]
+            font-normal
+            leading-[16px]
+            text-[#50576B]
+
+            sm:max-w-[390px]
+            sm:text-[13px]
+            sm:leading-[18px]
+
+            md:max-w-[480px]
+            md:text-[14px]
+            md:leading-5
+          "
+        >
+
+          Welcome to Eventra,
+          <span id="userName">John</span>.
+          Tell us what you love so we can curate the best events in Nigeria for you.
+
+        </p>
+
+
+        <!-- =================================================
+             PERSONALIZE BAR
+             ================================================= -->
+
+        <div
+          class="
+            mt-4
+            flex
+            h-[36px]
+            items-center
+            justify-between
+            rounded-[10px]
+            bg-[#EEF1FF]
+            px-3
+
+            sm:mt-5
+            sm:h-[40px]
+            sm:px-4
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-center
+              text-[11px]
+              font-medium
+              text-[#252B40]
+
+              sm:text-[12px]
+            "
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#6230F5"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              class="
+                mr-2
+                h-4
+                w-4
+              "
+            >
+
+              <path d="M4 7h10"></path>
+              <path d="M18 7h2"></path>
+
+              <path d="M4 12h2"></path>
+              <path d="M10 12h10"></path>
+
+              <path d="M4 17h10"></path>
+              <path d="M18 17h2"></path>
+
+              <circle
+                cx="16"
+                cy="7"
+                r="2"
+              ></circle>
+
+              <circle
+                cx="8"
+                cy="12"
+                r="2"
+              ></circle>
+
+              <circle
+                cx="16"
+                cy="17"
+                r="2"
+              ></circle>
+
+            </svg>
+
+            Personalize Vibe
+
+          </div>
+
+
+          <div
+            id="selectionCounter"
+            class="
+              rounded-full
+              bg-[#DFD5FF]
+              px-3
+              py-1
+              text-[10px]
+              font-semibold
+              text-[#3D1A8B]
+
+              sm:text-[11px]
+            "
+          >
+
+            3 selected (Target: 3+)
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             INTEREST HEADER
+             ================================================= -->
+
+        <div
+          class="
+            mt-4
+            flex
+            items-center
+            justify-between
+
+            sm:mt-5
+          "
+        >
+
+          <h2
+            class="
+              text-[15px]
+              font-bold
+              leading-5
+              text-[#101A33]
+
+              sm:text-[16px]
+
+              md:text-[18px]
+            "
+          >
+
+            Select your interests
+
+          </h2>
+
+
+          <span
+            class="
+              text-[9px]
+              font-semibold
+              uppercase
+              tracking-[0.5px]
+              text-[#575D6C]
+
+              sm:text-[10px]
+            "
+          >
+
+            PICK 3 OR MORE
+
+          </span>
+
+        </div>
+
+
+        <!-- =================================================
+             INTERESTS
+             ================================================= -->
+
+        <div
+          id="interestsContainer"
+          class="
+            mt-2
+            flex
+            flex-col
+            items-start
+            gap-1.5
+
+            sm:gap-2
+          "
+        >
+
+
+          <button
+            type="button"
+            data-interest="Afrobeats & Live Music"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">🎵</span>
+
+            <span>
+              Afrobeats &amp; Live Music
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Tech & Startups"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">💼</span>
+
+            <span>
+              Tech &amp; Startups
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Food & Drinks / Festivals"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">🍲</span>
+
+            <span>
+              Food &amp; Drinks / Festivals
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Arts & Culture"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">🎭</span>
+
+            <span>
+              Arts &amp; Culture
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Sports & Fitness"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">⚽</span>
+
+            <span>
+              Sports &amp; Fitness
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Stand-up Comedy"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">🎤</span>
+
+            <span>
+              Stand-up Comedy
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Pop-ups & Fashion"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">🛍️</span>
+
+            <span>
+              Pop-ups &amp; Fashion
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Networking & Business"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">🤝</span>
+
+            <span>
+              Networking &amp; Business
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            data-interest="Nightlife & Parties"
+            class="interest-btn"
+          >
+
+            <span class="interest-icon">💃</span>
+
+            <span>
+              Nightlife &amp; Parties
+            </span>
+
+            <span class="interest-status">
+              +
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- =================================================
+             PRIMARY CITY
+             ================================================= -->
+
+        <div
+          class="
+            mt-5
+
+            sm:mt-6
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-center
+              justify-between
+            "
+          >
+
+            <h2
+              class="
+                text-[15px]
+                font-bold
+                text-[#101A33]
+
+                sm:text-[16px]
+
+                md:text-[18px]
+              "
+            >
+
+              Your primary city
+
+            </h2>
+
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#6230F5"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-5 w-5"
+            >
+
+              <path
+                d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0z"
+              ></path>
+
+              <circle
+                cx="12"
+                cy="10"
+                r="2"
+              ></circle>
+
+            </svg>
+
+          </div>
+
+
+          <div
+            id="citiesContainer"
+            class="
+              mt-2
+              grid
+              grid-cols-2
+              gap-2
+              sm:max-w-[460px]
+            "
+          >
+
+            <button
+              type="button"
+              data-city="Lagos"
+              class="city-btn"
+            >
+              Lagos
+            </button>
+
+
+            <button
+              type="button"
+              data-city="Abuja"
+              class="city-btn"
+            >
+              Abuja
+            </button>
+
+
+            <button
+              type="button"
+              data-city="Port Harcourt"
+              class="city-btn"
+            >
+              Port Harcourt
+            </button>
+
+
+            <button
+              type="button"
+              data-city="Ibadan"
+              class="city-btn"
+            >
+              Ibadan
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             NOTIFICATION CARD
+             ================================================= -->
+
+        <div
+          class="
+            mt-5
+            flex
+            min-h-[68px]
+            items-center
+            rounded-[12px]
+            bg-white
+            px-3
+            py-2.5
+            shadow-[0_2px_8px_rgba(0,0,0,0.04)]
+
+            sm:mt-6
+            sm:min-h-[74px]
+            sm:px-4
+          "
+        >
+
+          <div
+            class="
+              flex
+              h-[38px]
+              w-[38px]
+              shrink-0
+              items-center
+              justify-center
+              rounded-[10px]
+              bg-[#FFF0D8]
+              text-[18px]
+
+              sm:h-[42px]
+              sm:w-[42px]
+            "
+          >
+
+            🔔
+
+          </div>
+
+
+          <div
+            class="
+              ml-3
+              min-w-0
+              flex-1
+            "
+          >
+
+            <p
+              class="
+                text-[11px]
+                font-semibold
+                leading-4
+                text-[#101A33]
+
+                sm:text-[12px]
+              "
+            >
+
+              Early Bird Drops &amp; Flash Sales
+
+            </p>
+
+
+            <p
+              class="
+                mt-0.5
+                max-w-[245px]
+                text-[9px]
+                font-normal
+                leading-[13px]
+                text-[#687080]
+
+                sm:max-w-[320px]
+                sm:text-[10px]
+                sm:leading-[14px]
+              "
+            >
+
+              Be notified when VIP access or free tickets unlock in Lagos.
+
+            </p>
+
+          </div>
+
+
+          <button
+            id="notificationToggle"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            class="
+              relative
+              ml-2
+              h-[25px]
+              w-[46px]
+              shrink-0
+              rounded-full
+              bg-[#6230F5]
+              transition
+              duration-200
+            "
+          >
+
+            <span
+              id="toggleKnob"
+              class="
+                absolute
+                right-[3px]
+                top-[3px]
+                flex
+                h-[19px]
+                w-[19px]
+                items-center
+                justify-center
+                rounded-full
+                bg-white
+                text-[9px]
+                text-[#6230F5]
+                shadow
+                transition-all
+                duration-200
+              "
+            >
+
+              ⚡
+
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- =================================================
+             VALIDATION
+             ================================================= -->
+
+        <p
+          id="validationMessage"
+          class="
+            mt-2
+            hidden
+            text-center
+            text-[11px]
+            font-medium
+            text-red-500
+          "
+        ></p>
+
+
+        <!-- =================================================
+             GET STARTED
+             ================================================= -->
+
+        <button
+          id="getStartedBtn"
+          type="button"
+          class="
+            mt-5
+            flex
+            h-[48px]
+            w-full
+            items-center
+            justify-center
+            rounded-[10px]
+            bg-[#6230F5]
+            text-[13px]
+            font-semibold
+            text-white
+            shadow-[0_8px_18px_rgba(98,48,245,0.25)]
+            transition
+            duration-200
+            hover:bg-[#5525DF]
+            active:scale-[0.99]
+
+            sm:h-[52px]
+            sm:text-[14px]
+          "
+        >
+
+          Get Started
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="
+              ml-2
+              h-[17px]
+              w-[17px]
+            "
+          >
+
+            <path d="M5 12h14"></path>
+
+            <path d="M13 6l6 6-6 6"></path>
+
+          </svg>
+
+        </button>
+
+
+        <!-- =================================================
+             SKIP
+             ================================================= -->
+
+        <button
+          id="skipBtn"
+          type="button"
+          class="
+            mx-auto
+            mt-2
+            block
+            text-[11px]
+            font-medium
+            text-[#555B6C]
+            hover:text-[#6230F5]
+
+            sm:text-[12px]
+          "
+        >
+
+          Skip for now
+
+        </button>
+
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- JavaScript -->
+
+  <script src="./script.js"></script>
+
+</body>
+
+</html>

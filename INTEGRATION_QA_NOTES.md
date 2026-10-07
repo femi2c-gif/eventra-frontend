@@ -34,3 +34,39 @@
 ## Expected final QA journey
 
 Sign In → Home → Explore/Discover → Event Details → Select quantity → Create Booking → Paystack → Payment verification → Payment Success → Digital Ticket → My Tickets → Profile/Edit Profile → Logout → Sign In again.
+
+
+## Paystack verification update — 2026-10-07
+
+- Screen 14 now reads the Paystack `reference` from the callback URL (`reference` or `trxref`) or stored payment reference.
+- Screen 14 retrieves the JWT from `localStorage.access_token` first, with existing Eventra token keys retained as fallbacks.
+- `POST /api/payments/verify` is called with `Authorization: Bearer <access_token>` and `{ "reference": "..." }`.
+- Screen 14 does not treat the Paystack hosted success page as proof of payment; it waits for the backend verification response.
+- Successful verification preserves booking/ticket IDs and payment verification data, then shows a 5-second confirmed-payment countdown before routing to Screen 15.
+- Screen 15 now waits 5 seconds before automatically opening Screen 16; the manual digital-pass button remains available.
+- The frontend must still receive a successful response from `/api/payments/verify`; a backend HTTP 500 cannot be safely bypassed.
+
+## 2026-10-07 Payment verification + signup password reveal update
+
+- Screen 14 payment verification now sends the Bearer access token and reference to `/api/payments/verify` and keeps retrying for up to 30 attempts (2 seconds apart) before showing a manual `Check Payment Again` action.
+- The frontend does not bypass backend verification. A successful Paystack payment can only proceed to Screen 15 after the verification API confirms success.
+- The current DevTools evidence from testing shows `/api/payments/verify` returning HTTP 500. This is a backend verification failure; the frontend request is reaching the endpoint and must not be treated as a successful payment until the backend returns a successful verification response.
+- Screen 02 Create Account now has an eye-button password reveal/hide control so users can inspect the password they entered before submitting the form.
+
+## Payment Amount Consistency Fix — 2026-10-07
+- Screen 12 no longer adds frontend-only 10% service fee and 7.5% VAT to the payable amount because the current backend booking response does not return those fee components.
+- The booking response `total_price` is now treated as the server-side source of truth for the amount payable.
+- The exact backend booking total is stored as `eventra_payable_amount` and `eventra_checkout_total`.
+- Screen 13 displays and sends that same amount to `POST /payments/initiate`.
+- This prevents the UI total, Paystack amount, and booking amount from diverging.
+
+## 2026-10-07 Final payment amount + ticket handoff fix
+
+- Checkout fee rows no longer show stale hard-coded fee amounts; when the backend does not supply separate fees, Service Processing and VAT/local taxes display as Included.
+- Checkout uses the selected ticket subtotal before booking and then replaces the payable total with the backend booking `total_price` returned by `POST /api/bookings`.
+- The exact backend total is carried to Screen 13 and Paystack, so the Eventra checkout total and Paystack amount are the same.
+- Screen 12 now stores a real ticket snapshot from the booking `Tickets` response, including ticket ID, ticket code, QR URL, event and attendee details.
+- Screen 15 now hydrates the success pass with the real booking/ticket/user data instead of the old John Doe/demo reference values.
+- Screen 16 now uses the real cached ticket snapshot if the ticket-detail endpoint temporarily returns 404, so a successful purchase is not blocked by an immediate ticket-detail lookup.
+- Corrected the Screen 16 My Tickets route to `17_MyTicket`.
+- Cache-busted the changed screen scripts to ensure browsers load the updated payment/ticket code.

@@ -1289,11 +1289,19 @@ function setupAutomaticDigitalTicketTransition() {
 
     const status = String(
         verification?.data?.status ||
+        verification?.data?.payment?.status ||
+        verification?.data?.transaction?.status ||
         verification?.status ||
         ""
     ).toLowerCase();
 
-    if (!["completed", "success", "successful"].includes(status)) {
+    const verified =
+        verification?.status === "success" ||
+        verification?.success === true ||
+        verification?.data?.success === true ||
+        ["completed", "success", "successful", "paid"].includes(status);
+
+    if (!verified) {
         return;
     }
 
@@ -1301,7 +1309,106 @@ function setupAutomaticDigitalTicketTransition() {
     setTimeout(() => {
         if (document.visibilityState !== "visible") return;
         openDigitalTicket();
-    }, 4000);
+    }, 5000);
+}
+
+// ============================================================
+// HYDRATE SUCCESS SCREEN WITH REAL BOOKING/TICKET DATA
+// ============================================================
+function getRealTicketSnapshot() {
+    const keys = ["eventra_digital_ticket"];
+    for (const key of keys) {
+        const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+        if (raw) {
+            try { return JSON.parse(raw); } catch (_) {}
+        }
+    }
+
+    const rawBooking = sessionStorage.getItem("eventra_booking_data");
+    if (!rawBooking) return null;
+    try {
+        const payload = JSON.parse(rawBooking);
+        const data = payload?.data || payload;
+        const booking = data?.booking || data;
+        const tickets = data?.Tickets || data?.tickets || booking?.Tickets || booking?.tickets || [];
+        const t = Array.isArray(tickets) ? tickets[0] : null;
+        if (!t) return null;
+        const event = booking?.Event || booking?.event || data?.Event || data?.event || {};
+        const user = JSON.parse(localStorage.getItem("eventra_user") || sessionStorage.getItem("eventra_user") || "{}");
+        const fullName = [user?.first_name, user?.last_name].filter(Boolean).join(" ") || user?.name || "Attendee";
+        const types = event?.TicketTypes || event?.ticket_types || event?.ticketTypes || [];
+        const type = types.find(x => String(x?.id) === String(t?.ticket_type_id)) || {};
+        const formatDate = value => {
+            if (!value) return "";
+            const d = new Date(value);
+            return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleDateString("en-NG", { weekday:"short", month:"short", day:"numeric", year:"numeric" });
+        };
+        const formatTime = (start,end) => {
+            if (!start) return "";
+            const a = new Date(start); if (Number.isNaN(a.getTime())) return "";
+            const opts = {hour:"numeric", minute:"2-digit", hour12:true};
+            const first = a.toLocaleTimeString("en-NG", opts);
+            if (!end) return `${first} WAT`;
+            const b = new Date(end); if (Number.isNaN(b.getTime())) return `${first} WAT`;
+            return `${first} – ${b.toLocaleTimeString("en-NG", opts)} WAT`;
+        };
+        const snapshot = {
+            id: t.id || t.ticket_id || "",
+            ticket_code: t.ticket_code || t.ticketCode || "",
+            qr_code_url: t.qr_code_url || t.qrCodeUrl || "",
+            status: t.status || "valid",
+            attendee_name: fullName,
+            ticket_type: type?.name || t.ticket_type_name || "Ticket",
+            quantity: Number(t.quantity || 1),
+            event_name: event?.title || event?.name || "Eventra Event",
+            event_category: event?.category || "EVENTRA",
+            venue: event?.venue_name || event?.venue || "",
+            address: event?.venue_address || event?.address || "",
+            date: formatDate(event?.start_date || event?.startDate),
+            time: formatTime(event?.start_date || event?.startDate, event?.end_date || event?.endDate),
+            gate: "General Entry",
+            seat: "General Admission",
+            organizer: event?.organizer_name || "Eventra Organizer"
+        };
+        sessionStorage.setItem("eventra_digital_ticket", JSON.stringify(snapshot));
+        localStorage.setItem("eventra_digital_ticket", JSON.stringify(snapshot));
+        return snapshot;
+    } catch (_) { return null; }
+}
+
+function hydrateSuccessScreen() {
+    const ticket = getRealTicketSnapshot();
+    const userRaw = localStorage.getItem("eventra_user") || sessionStorage.getItem("eventra_user");
+    let user = {};
+    try { user = userRaw ? JSON.parse(userRaw) : {}; } catch (_) {}
+    const checkout = (() => { try { return JSON.parse(sessionStorage.getItem("eventra_checkout") || "{}"); } catch (_) { return {}; } })();
+
+    const email = user?.email || checkout?.attendee?.email || "";
+    const set = (id, value) => { const el = document.getElementById(id); if (el && value) el.textContent = value; };
+
+    set("confirmationEmail", email);
+    set("eventName", ticket?.event_name);
+    set("eventCity", ticket?.address || ticket?.venue);
+    set("eventDate", ticket?.date);
+    set("eventTime", ticket?.time);
+    set("eventVenue", ticket?.venue);
+    set("eventAddress", ticket?.address);
+    set("attendeeName", ticket?.attendee_name);
+    set("ticketTier", ticket ? `${ticket.ticket_type} × ${ticket.quantity || 1}` : "");
+    set("ticketReferenceTop", ticket?.ticket_code);
+    set("ticketReference", ticket?.ticket_code);
+
+    const qr = document.getElementById("qrCode");
+    if (qr && ticket?.qr_code_url) {
+        qr.innerHTML = "";
+        const img = document.createElement("img");
+        img.src = ticket.qr_code_url;
+        img.alt = "Eventra digital ticket QR code";
+        img.className = "h-full w-full object-contain";
+        qr.appendChild(img);
+    } else if (qr) {
+        qr.innerHTML = `<div class="flex h-full w-full items-center justify-center text-center text-[12px] font-medium text-[#626A7D]">Your verified ticket QR will appear on the digital pass.</div>`;
+    }
 }
 
 // ============================================================
@@ -1328,6 +1435,9 @@ document.addEventListener(
             ROUTES.digitalTicket
         );
 
+
+        // Populate the success pass from the real booking/ticket response.
+        hydrateSuccessScreen();
 
         /*
             Preserve whatever ticket/booking

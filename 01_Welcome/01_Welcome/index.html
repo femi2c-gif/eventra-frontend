@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Eventra | Welcome</title>
+
+
+  <!-- =========================================================
+       TAILWIND CSS
+       ========================================================= -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <script>
+
+    tailwind.config = {
+
+      theme: {
+
+        extend: {
+
+          fontFamily: {
+
+            sans: [
+              "Arial",
+              "Helvetica",
+              "sans-serif"
+            ],
+
+          },
+
+          colors: {
+
+            eventra: {
+
+              purple: "#6D2BFF",
+
+              dark: "#17003D",
+
+            },
+
+          },
+
+        },
+
+      },
+
+    };
+
+  </script>
+
+
+  <!-- =========================================================
+       FORCE NORMAL TYPOGRAPHY
+       ========================================================= -->
+
+  <style>
+
+    html,
+    body,
+    body *,
+    button,
+    p,
+    span {
+
+      font-style: normal !important;
+
+    }
+
+  </style>
+
+</head>
+
+
+<body
+  class="
+    m-0
+    min-h-screen
+    overflow-hidden
+    bg-black
+    font-sans
+    font-normal
+  "
+>
+
+
+  <!-- =========================================================
+       SCREEN 01
+       WELCOME SCREEN
+       ========================================================= -->
+
+  <main
+    id="welcomeScreen"
+    class="
+      relative
+      min-h-[100svh]
+      w-full
+      overflow-hidden
+      bg-black
+    "
+  >
+
+
+    <!-- =======================================================
+         BACKGROUND IMAGE
+         ======================================================= -->
+
+    <img
+      src="./eventra-welcome-bg.png"
+      alt=""
+      aria-hidden="true"
+      class="
+        absolute
+        inset-0
+        h-full
+        w-full
+        object-cover
+        object-center
+      "
+    >
+
+
+    <!-- =======================================================
+         PURPLE OVERLAY
+         ======================================================= -->
+
+    <div
+      aria-hidden="true"
+      class="
+        absolute
+        inset-0
+        bg-gradient-to-b
+        from-[#24004F]/90
+        via-[#43098A]/25
+        via-[55%]
+        to-[#08000F]/95
+      "
+    ></div>
+
+
+    <!-- =======================================================
+         DARK OVERLAY
+         ======================================================= -->
+
+    <div
+      aria-hidden="true"
+      class="
+        absolute
+        inset-0
+        bg-black/10
+      "
+    ></div>
+
+
+    <!-- =======================================================
+         MAIN CONTENT
+         ======================================================= -->
+
+    <div
+      class="
+        relative
+        z-10
+        flex
+        min-h-[100svh]
+        w-full
+        flex-col
+      "
+    >
+
+
+      <!-- =====================================================
+           EVENTRA LOGO
+           ===================================================== -->
+
+      <div
+        class="
+          flex
+          justify-center
+          pt-[150px]
+
+          sm:pt-[170px]
+
+          md:pt-[150px]
+
+          lg:pt-[170px]
+        "
+      >
+
+        <img
+          src="./eventra-logo-white.png"
+          alt="Eventra"
+          class="
+            block
+            w-[190px]
+            object-contain
+
+            sm:w-[210px]
+
+            md:w-[230px]
+
+            lg:w-[240px]
+          "
+        >
+
+      </div>
+
+
+      <!-- =====================================================
+           FLEXIBLE SPACE
+           ===================================================== -->
+
+      <div class="flex-1"></div>
+
+
+      <!-- =====================================================
+           BOTTOM CONTENT
+           ===================================================== -->
+
+      <section
+        class="
+          mx-auto
+          w-full
+          max-w-[520px]
+          px-5
+          pb-6
+
+          sm:px-8
+          sm:pb-8
+
+          md:max-w-[560px]
+
+          lg:pb-12
+        "
+      >
+
+
+        <!-- ===================================================
+             DESCRIPTION
+             =================================================== -->
+
+        <p
+          class="
+            mx-auto
+            mb-7
+            max-w-[320px]
+            text-center
+            font-sans
+            text-[15px]
+            font-medium
+            leading-[21px]
+            text-white
+            drop-shadow-lg
+
+            sm:max-w-[400px]
+            sm:text-[17px]
+            sm:leading-6
+
+            md:text-[18px]
+          "
+        >
+
+          Find amazing events in your city
+
+          <br class="sm:hidden">
+
+          and beyond.
+
+        </p>
+
+
+        <!-- ===================================================
+             GET STARTED BUTTON
+             =================================================== -->
+
+        <button
+          id="getStartedBtn"
+          type="button"
+          class="
+            flex
+            h-[48px]
+            w-full
+            items-center
+            justify-center
+            rounded-[15px]
+            bg-[#6D2BFF]
+            px-6
+            font-sans
+            text-[14px]
+            font-semibold
+            text-white
+            shadow-[0_8px_25px_rgba(109,43,255,0.40)]
+            transition-all
+            duration-200
+            hover:bg-[#793AFF]
+            hover:shadow-[0_10px_30px_rgba(109,43,255,0.55)]
+            active:scale-[0.98]
+            focus:outline-none
+            focus:ring-2
+            focus:ring-white/60
+
+            sm:h-[52px]
+            sm:text-[15px]
+          "
+        >
+
+          Get Started
+
+        </button>
+
+
+        <!-- ===================================================
+             SIGN IN BUTTON
+             =================================================== -->
+
+        <button
+          id="signInBtn"
+          type="button"
+          class="
+            mt-3
+            flex
+            h-[48px]
+            w-full
+            items-center
+            justify-center
+            rounded-[15px]
+            border
+            border-white/20
+            bg-black/25
+            px-6
+            font-sans
+            text-[14px]
+            font-normal
+            text-white
+            backdrop-blur-md
+            transition-all
+            duration-200
+            hover:bg-white/10
+            active:scale-[0.98]
+            focus:outline-none
+            focus:ring-2
+            focus:ring-white/40
+
+            sm:h-[52px]
+            sm:text-[15px]
+          "
+        >
+
+          Sign In
+
+        </button>
+
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+
+  <script src="./script.js"></script>
+
+</body>
+
+</html>

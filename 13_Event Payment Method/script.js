@@ -688,9 +688,36 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================================================
 
   const paymentTotal = document.getElementById("paymentTotal");
+  const footerPayableAmount = document.getElementById("footerPayableAmount");
+  const payButtonAmount = document.getElementById("payButtonAmount");
   const checkoutData = JSON.parse(sessionStorage.getItem("eventra_checkout") || "{}");
-  if (paymentTotal && checkoutData.total) {
-    paymentTotal.textContent = `₦${Number(checkoutData.total).toLocaleString("en-NG")}`;
+
+  // Screen 13 has three visible payment amounts: AMOUNT DUE, TOTAL PAYABLE,
+  // and the Pay button. They must always display the exact same server-side
+  // booking amount. Never let a stale value hard-coded in the HTML win.
+  function formatPaymentAmount(amount) {
+    return `₦${Math.round(Number(amount) || 0).toLocaleString("en-NG")}`;
+  }
+
+  function syncPaymentAmounts(amount) {
+    const numericAmount = Number(amount);
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) return;
+
+    const formatted = formatPaymentAmount(numericAmount);
+    if (paymentTotal) paymentTotal.textContent = formatted;
+    if (footerPayableAmount) footerPayableAmount.textContent = formatted;
+    if (payButtonAmount) payButtonAmount.textContent = `Pay ${formatted}`;
+  }
+
+  const storedPayableAmount = Number(
+    sessionStorage.getItem("eventra_payable_amount") ||
+    checkoutData.total ||
+    sessionStorage.getItem("eventra_checkout_total") ||
+    0
+  );
+
+  if (storedPayableAmount > 0) {
+    syncPaymentAmounts(storedPayableAmount);
   }
 
   if (payButton) {
@@ -738,9 +765,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Prefer the amount returned by the booking API so Paystack is
         // initialized with the server-side booking total.
         const booking = bookingData?.data || bookingData || {};
+        // Always use the amount created by the backend booking as the Paystack
+        // amount. This prevents the UI from adding a different frontend fee
+        // calculation and charging/displaying a different amount.
         const amount = Number(
           booking?.total_price ??
+          booking?.final_amount ??
           booking?.total_amount ??
+          sessionStorage.getItem("eventra_payable_amount") ??
           checkout?.total ??
           Number(sessionStorage.getItem("eventra_checkout_total") || 0)
         );
@@ -751,6 +783,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!Number.isFinite(amount) || amount <= 0) {
           throw new Error("A valid booking amount is required to start payment.");
         }
+
+        // Keep every Eventra payment surface synchronized with this exact amount.
+        sessionStorage.setItem("eventra_payable_amount", String(amount));
+        sessionStorage.setItem("eventra_checkout_total", String(amount));
+        syncPaymentAmounts(amount);
 
         const eventName =
           checkout?.event_title ||
@@ -798,6 +835,15 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.setItem("eventra_payment_method_name", "Paystack");
         sessionStorage.setItem("eventra_paystack_active", "1");
         sessionStorage.setItem("eventra_paystack_started_at", String(Date.now()));
+        // Paystack owns the hosted checkout page. Eventra cannot inject a
+        // close button or JavaScript timer into that cross-origin page.
+        // The backend must initialize this transaction with Eventra's HTTPS
+        // callback URL so Paystack automatically returns the customer here
+        // after a successful payment. Screen 14 then verifies the reference
+        // and continues the confirmed-payment flow.
+        //
+        // Production callback target:
+        // https://eventra-frontend-jet.vercel.app/14_Payment%20Processing/index.html
         window.location.assign(authorizationUrl);
       } catch (error) {
         console.error("Paystack checkout error:", error);
@@ -817,7 +863,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetPayButton() {
     if (!payButton) return;
     payButton.disabled = false;
-    payButton.textContent = `Pay ₦${Number(checkoutData.total || sessionStorage.getItem("eventra_checkout_total") || 0).toLocaleString("en-NG")}`;
+    const amount = Number(
+      sessionStorage.getItem("eventra_payable_amount") ||
+      checkoutData.total ||
+      sessionStorage.getItem("eventra_checkout_total") ||
+      0
+    );
+    if (amount > 0) syncPaymentAmounts(amount);
   }
 
   function continueToProcessing(reference) {

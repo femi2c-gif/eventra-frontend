@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Eventra | Verify Account</title>
+
+  <!-- =========================================================
+       TAILWIND CSS
+       ========================================================= -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: [
+              "Arial",
+              "Helvetica",
+              "sans-serif"
+            ]
+          },
+
+          colors: {
+            eventra: {
+              purple: "#6230F5",
+              dark: "#101A33",
+              muted: "#8F96A8"
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- =========================================================
+       CUSTOM STYLES
+       ========================================================= -->
+
+  <style>
+    html,
+    body,
+    body *,
+    button,
+    input,
+    p,
+    h1,
+    h2,
+    span {
+      font-style: normal !important;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+      background: #F8F9FE;
+      color: #101A33;
+    }
+
+    input {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      appearance: textfield;
+    }
+
+    /* =========================================================
+       OTP BOXES
+       ========================================================= */
+
+    .otp-input {
+      height: 48px;
+      width: 48px;
+      flex-shrink: 0;
+
+      border: 2px solid #D9DDEA;
+      border-radius: 10px;
+
+      background: #FFFFFF;
+
+      color: #101A33;
+
+      text-align: center;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+      font-size: 20px;
+      font-weight: 600;
+
+      outline: none;
+
+      box-shadow:
+        0 1px 3px rgba(16, 26, 51, 0.04);
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .otp-input:focus {
+      border-color: #6230F5;
+
+      box-shadow:
+        0 0 0 3px rgba(98, 48, 245, 0.12);
+    }
+
+    .otp-input:not(:placeholder-shown) {
+      border-color: #B8B0F5;
+    }
+
+    @media (min-width: 640px) {
+      .otp-input {
+        height: 54px;
+        width: 54px;
+
+        border-radius: 11px;
+
+        font-size: 22px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .otp-input {
+        height: 64px;
+        width: 64px;
+
+        border-radius: 12px;
+
+        font-size: 24px;
+      }
+    }
+
+    /* =========================================================
+       MOBILE SAFETY
+       ========================================================= */
+
+    @media (max-width: 380px) {
+      .otp-input {
+        height: 43px;
+        width: 43px;
+
+        border-radius: 9px;
+
+        font-size: 18px;
+      }
+
+      .otp-container {
+        gap: 5px !important;
+      }
+    }
+  </style>
+</head>
+
+
+<body
+  class="
+    m-0
+    min-h-screen
+    overflow-x-hidden
+    bg-[#F8F9FE]
+    font-sans
+    font-normal
+    text-[#101A33]
+  "
+>
+
+  <!-- =========================================================
+       SCREEN 03 - VERIFY ACCOUNT
+       ========================================================= -->
+
+  <main
+    class="
+      min-h-[100svh]
+      w-full
+      bg-[#F8F9FE]
+    "
+  >
+
+    <!-- =======================================================
+         RESPONSIVE CONTAINER
+         ======================================================= -->
+
+    <div
+      class="
+        mx-auto
+        flex
+        min-h-[100svh]
+        w-full
+        max-w-[520px]
+        flex-col
+
+        md:max-w-[620px]
+
+        lg:max-w-[720px]
+      "
+    >
+
+      <!-- =====================================================
+           TOP BAR
+           ===================================================== -->
+
+      <header
+        class="
+          flex
+          h-[58px]
+          w-full
+          items-center
+          border-b
+          border-[#EEF0F7]
+          bg-[#F8F9FE]
+          px-5
+
+          sm:px-7
+
+          md:h-[64px]
+          md:px-9
+
+          lg:px-10
+        "
+      >
+
+        <button
+          id="backBtn"
+          type="button"
+          aria-label="Go back"
+          class="
+            flex
+            h-9
+            w-9
+            items-center
+            justify-start
+            rounded-full
+            text-[#101A33]
+            transition
+            duration-200
+            hover:bg-black/5
+            active:scale-95
+            focus:outline-none
+          "
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-[22px] w-[22px]"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5"></path>
+
+            <path d="M12 19l-7-7 7-7"></path>
+          </svg>
+
+        </button>
+
+      </header>
+
+
+      <!-- =====================================================
+           CONTENT
+           ===================================================== -->
+
+      <section
+        class="
+          flex
+          flex-1
+          flex-col
+          px-3
+          pb-8
+          pt-4
+
+          sm:px-6
+          sm:pt-5
+
+          md:px-8
+          md:pt-7
+
+          lg:px-10
+          lg:pt-8
+        "
+      >
+
+        <!-- ===================================================
+             VERIFICATION CARD
+             =================================================== -->
+
+        <div
+          class="
+            rounded-[11px]
+            bg-gradient-to-br
+            from-[#F2EEFF]
+            via-[#F0F2FF]
+            to-[#E7EEFF]
+            px-5
+            pb-6
+            pt-6
+
+            sm:px-7
+            sm:pb-7
+            sm:pt-7
+
+            md:px-10
+            md:pb-9
+            md:pt-9
+          "
+        >
+
+          <!-- =================================================
+               VERIFICATION ICON
+               ================================================= -->
+
+          <div
+            class="
+              relative
+              mx-auto
+              flex
+              h-[72px]
+              w-[72px]
+              items-center
+              justify-center
+              rounded-full
+              bg-white
+              shadow-[0_5px_12px_rgba(0,0,0,0.12)]
+
+              sm:h-[76px]
+              sm:w-[76px]
+
+              md:h-[84px]
+              md:w-[84px]
+            "
+          >
+
+            <!-- Envelope -->
+
+            <div
+              class="
+                flex
+                h-[38px]
+                w-[38px]
+                items-center
+                justify-center
+                rounded-[7px]
+                bg-[#5D18E8]
+
+                sm:h-[40px]
+                sm:w-[40px]
+              "
+            >
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-[23px] w-[23px]"
+              >
+
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                ></rect>
+
+                <path
+                  d="M3 7l9 6 9-6"
+                ></path>
+
+              </svg>
+
+            </div>
+
+
+            <!-- Security Badge -->
+
+            <div
+              class="
+                absolute
+                -bottom-1
+                -right-1
+                flex
+                h-[25px]
+                w-[25px]
+                items-center
+                justify-center
+                rounded-full
+                border-[2px]
+                border-white
+                bg-[#6330F5]
+                shadow-sm
+              "
+            >
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-[13px] w-[13px]"
+              >
+
+                <path
+                  d="M12 3l7 3v5c0 4.5-3 7.7-7 10-4-2.3-7-5.5-7-10V6l7-3z"
+                ></path>
+
+                <path
+                  d="M9 12l2 2 4-4"
+                ></path>
+
+              </svg>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               TITLE
+               ================================================= -->
+
+          <h1
+            class="
+              mt-5
+              text-center
+              font-sans
+              text-[23px]
+              font-semibold
+              leading-[28px]
+              tracking-[-0.4px]
+              text-[#101A33]
+
+              sm:text-[25px]
+              sm:leading-8
+
+              md:text-[28px]
+              md:leading-9
+            "
+          >
+            Verify Your Account
+          </h1>
+
+
+          <!-- =================================================
+               DESCRIPTION
+               ================================================= -->
+
+          <p
+            class="
+              mx-auto
+              mt-1
+              max-w-[310px]
+              text-center
+              font-sans
+              text-[13px]
+              font-normal
+              leading-[19px]
+              text-[#50576B]
+
+              sm:max-w-[360px]
+              sm:text-[14px]
+              sm:leading-5
+
+              md:max-w-[420px]
+              md:text-[15px]
+            "
+          >
+            We've sent a 6-digit verification code to secure your event passes.
+          </p>
+
+
+          <!-- =================================================
+               EMAIL ROW
+               ================================================= -->
+
+          <div
+            class="
+              mt-4
+              flex
+              h-[34px]
+              w-full
+              items-center
+              justify-between
+              rounded-[7px]
+              bg-white
+              px-[11px]
+              shadow-[0_1px_3px_rgba(0,0,0,0.02)]
+
+              sm:h-[37px]
+              sm:px-3
+
+              md:h-[40px]
+            "
+          >
+
+            <div
+              class="
+                flex
+                min-w-0
+                items-center
+              "
+            >
+
+              <!-- Email Icon -->
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#5D18E8"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="
+                  mr-1.5
+                  h-[16px]
+                  w-[16px]
+                  shrink-0
+                "
+              >
+
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                ></rect>
+
+                <path
+                  d="M3 7l9 6 9-6"
+                ></path>
+
+              </svg>
+
+
+              <span
+                id="emailDisplay"
+                class="
+                  truncate
+                  font-sans
+                  text-[12px]
+                  font-semibold
+                  text-[#101A33]
+
+                  sm:text-[13px]
+
+                  md:text-[14px]
+                "
+              >
+                john@example.com
+              </span>
+
+            </div>
+
+
+            <!-- Edit -->
+
+            <button
+              id="editEmailBtn"
+              type="button"
+              class="
+                ml-3
+                shrink-0
+                font-sans
+                text-[11px]
+                font-semibold
+                text-[#6230F5]
+                hover:underline
+
+                sm:text-[12px]
+
+                md:text-[13px]
+              "
+            >
+              Edit
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             OTP INPUTS
+             =================================================== -->
+
+        <div
+          class="
+            otp-container
+            mt-5
+            flex
+            w-full
+            items-center
+            justify-between
+            gap-2
+
+            sm:gap-3
+
+            md:mx-auto
+            md:max-w-[470px]
+            md:gap-4
+          "
+        >
+
+          <!-- OTP 1 -->
+
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            autocomplete="one-time-code"
+            aria-label="Verification digit 1"
+          >
+
+
+          <!-- OTP 2 -->
+
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            aria-label="Verification digit 2"
+          >
+
+
+          <!-- OTP 3 -->
+
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            aria-label="Verification digit 3"
+          >
+
+
+          <!-- OTP 4 -->
+
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            aria-label="Verification digit 4"
+          >
+
+
+          <!-- OTP 5 -->
+
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            aria-label="Verification digit 5"
+          >
+
+
+          <!-- OTP 6 -->
+
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            aria-label="Verification digit 6"
+          >
+
+        </div>
+
+
+        <!-- ===================================================
+             AUTO FILL MESSAGE
+             =================================================== -->
+
+        <p
+          class="
+            mt-2
+            flex
+            items-center
+            justify-center
+            font-sans
+            text-[9px]
+            font-normal
+            text-[#414657]
+
+            sm:text-[10px]
+
+            md:text-[11px]
+          "
+        >
+
+          <span
+            class="
+              mr-1
+              h-[5px]
+              w-[5px]
+              rounded-full
+              bg-[#6230F5]
+            "
+          ></span>
+
+          Auto-fill active from messages
+
+        </p>
+
+
+        <!-- ===================================================
+             RESEND
+             =================================================== -->
+
+        <div
+          class="
+            mt-5
+            flex
+            items-center
+            justify-center
+            text-center
+          "
+        >
+
+          <!-- Clock -->
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#4D5260"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="
+              mr-1
+              h-[15px]
+              w-[15px]
+            "
+          >
+
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+            ></circle>
+
+            <path
+              d="M12 7v5l3 2"
+            ></path>
+
+          </svg>
+
+
+          <span
+            class="
+              font-sans
+              text-[11px]
+              font-normal
+              text-[#4D5260]
+
+              sm:text-[12px]
+
+              md:text-[13px]
+            "
+          >
+            Didn't receive code?
+          </span>
+
+
+          <button
+            id="resendBtn"
+            type="button"
+            disabled
+            class="
+              ml-1
+              font-sans
+              text-[11px]
+              font-semibold
+              text-[#101A33]
+
+              sm:text-[12px]
+
+              md:text-[13px]
+
+              disabled:cursor-default
+            "
+          >
+            Resend in
+
+            <span id="countdown">
+              00:47
+            </span>
+          </button>
+
+        </div>
+
+
+        <!-- ===================================================
+             VERIFY BUTTON
+             =================================================== -->
+
+        <button
+          id="verifyBtn"
+          type="button"
+          class="
+            mt-5
+            flex
+            h-[44px]
+            w-full
+            items-center
+            justify-center
+            rounded-[10px]
+            bg-[#6230F5]
+            px-5
+            font-sans
+            text-[13px]
+            font-semibold
+            text-white
+            shadow-[0_7px_16px_rgba(98,48,245,0.22)]
+            transition-all
+            duration-200
+            hover:bg-[#5525DF]
+            active:scale-[0.99]
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+            focus:outline-none
+            focus:ring-2
+            focus:ring-[#6230F5]/30
+
+            sm:h-[47px]
+            sm:text-[14px]
+
+            md:h-[51px]
+            md:text-[15px]
+          "
+          disabled
+        >
+
+          Verify &amp; Continue
+
+          <!-- Arrow -->
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="
+              ml-1
+              h-[17px]
+              w-[17px]
+            "
+          >
+
+            <path d="M5 12h14"></path>
+
+            <path d="M13 6l6 6-6 6"></path>
+
+          </svg>
+
+        </button>
+
+
+        <!-- ===================================================
+             SECURITY MESSAGE
+             =================================================== -->
+
+        <div
+          class="
+            mt-5
+            flex
+            items-center
+            justify-center
+            text-center
+          "
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#686D7B"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="
+              mr-1
+              h-[13px]
+              w-[13px]
+            "
+          >
+
+            <rect
+              x="5"
+              y="10"
+              width="14"
+              height="10"
+              rx="2"
+            ></rect>
+
+            <path
+              d="M8 10V7a4 4 0 018 0v3"
+            ></path>
+
+            <circle
+              cx="12"
+              cy="15"
+              r="1"
+            ></circle>
+
+          </svg>
+
+
+          <span
+            class="
+              font-sans
+              text-[9px]
+              font-normal
+              text-[#686D7B]
+
+              sm:text-[10px]
+
+              md:text-[11px]
+            "
+          >
+            Secure 256-bit encrypted authentication by Eventra
+          </span>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+
+  <script src="./script.js"></script>
+
+</body>
+
+</html>

@@ -22,7 +22,7 @@ const ROUTES = {
         "../05_Home/index.html",
 
     tickets:
-        "../15_My Tickets/index.html",
+        "../17_MyTicket/index.html",
 
     profile:
         "../19_User%20Profile/index.html"
@@ -1503,6 +1503,16 @@ async function loadTicket() {
             );
 
 
+            // The booking response already contains the real ticket and QR.
+            // If the ticket-detail endpoint is temporarily unavailable, use that
+            // verified booking snapshot instead of blocking the user.
+            const cached = loadCachedTicket();
+            if (cached && cached.id === ticketId) {
+                console.warn("Ticket detail endpoint unavailable; using cached verified booking ticket.");
+                renderTicket(cached);
+                return;
+            }
+
             throw new Error(
                 `Ticket request failed: ${response.status}`
             );
@@ -2265,17 +2275,7 @@ document.addEventListener(
 
 
         if (cachedTicket) {
-
-            renderTicket(
-                cachedTicket
-            );
-
-        } else {
-
-            renderTicket(
-                defaultTicket
-            );
-
+            renderTicket(cachedTicket);
         }
 
 

@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  >
+
+  <title>Eventra - Payment Processing</title>
+
+  <!-- ============================================================
+       TAILWIND
+  ============================================================ -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            outfit: [
+              "Outfit",
+              "Arial",
+              "Helvetica",
+              "sans-serif"
+            ]
+          },
+
+          colors: {
+            eventra: "#6128FF",
+            "eventra-dark": "#5018E8",
+            ink: "#10203A",
+            secondary: "#626B82",
+            page: "#F7F8FD",
+            lightblue: "#EDF2FF",
+            timer: "#FFE1B1",
+            "timer-text": "#754700"
+          },
+
+          animation: {
+            "spin-slow": "spin 4s linear infinite",
+            "pulse-soft": "pulseSoft 2s ease-in-out infinite",
+            "processing-pulse": "processingPulse 1.8s ease-in-out infinite"
+          },
+
+          keyframes: {
+            pulseSoft: {
+              "0%, 100%": {
+                opacity: "0.65",
+                transform: "scale(1)"
+              },
+              "50%": {
+                opacity: "1",
+                transform: "scale(1.04)"
+              }
+            },
+
+            processingPulse: {
+              "0%, 100%": {
+                opacity: "0.75"
+              },
+              "50%": {
+                opacity: "1"
+              }
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+
+  <!-- ============================================================
+       OUTFIT FONT
+  ============================================================ -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <!-- ============================================================
+       BASE
+  ============================================================ -->
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family:
+        "Outfit",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-style: normal !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      font-style: normal !important;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family:
+        "Outfit",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-style: normal !important;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+
+</head>
+
+
+<body
+  class="
+    bg-[#E8E9EE]
+    text-ink
+    antialiased
+
+    md:flex
+    md:min-h-screen
+    md:justify-center
+    md:py-8
+  "
+>
+
+
+  <!-- ============================================================
+       APP
+  ============================================================ -->
+
+  <div
+    id="app"
+    class="
+      relative
+      mx-auto
+      min-h-screen
+      w-full
+      max-w-[430px]
+      overflow-x-hidden
+      bg-page
+
+      md:min-h-[calc(100vh-64px)]
+      md:max-w-[760px]
+      md:rounded-2xl
+      md:shadow-[0_12px_40px_rgba(15,24,44,0.12)]
+
+      lg:max-w-[900px]
+    "
+  >
+
+
+    <!-- ==========================================================
+         HEADER
+    =========================================================== -->
+
+    <header
+      class="
+        flex
+        h-[76px]
+        items-center
+        border-b
+        border-[#E7E9F0]
+        bg-[#FAFBFF]
+        px-[18px]
+
+        md:h-[82px]
+        md:px-8
+
+        lg:px-10
+      "
+    >
+
+      <button
+        id="backButton"
+        type="button"
+        aria-label="Go back"
+        class="
+          flex
+          h-[42px]
+          w-[42px]
+          items-center
+          justify-center
+          rounded-full
+          text-ink
+          transition
+          hover:bg-[#EEF0F6]
+          active:scale-95
+        "
+      >
+
+        <svg
+          class="h-[27px] w-[27px]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5"></path>
+          <path d="M12 19l-7-7 7-7"></path>
+        </svg>
+
+      </button>
+
+    </header>
+
+
+    <!-- ==========================================================
+         MAIN
+    =========================================================== -->
+
+    <main
+      class="
+        px-4
+        pb-8
+        pt-[12px]
+
+        sm:px-5
+
+        md:px-8
+        md:pt-[14px]
+
+        lg:px-10
+      "
+    >
+
+
+      <!-- ========================================================
+           SECURE GATEWAY BAR
+      ========================================================= -->
+
+      <section
+        class="
+          flex
+          h-[56px]
+          w-full
+          items-center
+          justify-between
+          rounded-full
+          bg-[#E8F0FF]
+          px-[17px]
+
+          md:h-[58px]
+          md:px-5
+        "
+      >
+
+        <div
+          class="
+            flex
+            min-w-0
+            items-center
+            gap-[8px]
+          "
+        >
+
+          <span
+            class="
+              h-[15px]
+              w-[15px]
+              shrink-0
+              rounded-full
+              bg-[#4F14D8]
+            "
+          ></span>
+
+
+          <span
+            class="
+              whitespace-nowrap
+              text-[15px]
+              font-semibold
+              leading-none
+              text-ink
+
+              md:text-[16px]
+            "
+          >
+            3D Secure Gateway Active
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            flex
+            shrink-0
+            items-center
+            gap-[7px]
+            text-[13px]
+            font-semibold
+            leading-none
+            text-[#5A6277]
+
+            md:text-[14px]
+          "
+        >
+
+          <svg
+            class="
+              h-[19px]
+              w-[19px]
+              text-eventra
+            "
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect
+              x="5"
+              y="10"
+              width="14"
+              height="10"
+              rx="2"
+            ></rect>
+
+            <path
+              d="M8 10V7a4 4 0 018 0v3"
+            ></path>
+          </svg>
+
+          <span>
+            256-BIT SSL
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <!-- ========================================================
+           PROCESSING CARD
+      ========================================================= -->
+
+      <section
+        class="
+          mt-[23px]
+          w-full
+          rounded-[17px]
+          bg-white
+          px-5
+          pb-[28px]
+          pt-[41px]
+          shadow-[0_4px_13px_rgba(30,43,70,0.08)]
+
+          md:px-9
+          md:pb-8
+          md:pt-12
+        "
+      >
+
+
+        <!-- ======================================================
+             PAYSTACK PROCESSING ICON
+        ======================================================= -->
+
+        <div
+          class="
+            relative
+            mx-auto
+            flex
+            h-[175px]
+            w-[175px]
+            items-center
+            justify-center
+
+            md:h-[185px]
+            md:w-[185px]
+          "
+        >
+
+          <!-- Outer ring -->
+
+          <div
+            class="
+              absolute
+              inset-0
+              rounded-full
+              border-[15px]
+              border-[#F3EDFF]
+              animate-pulse-soft
+            "
+          ></div>
+
+
+          <!-- Middle ring -->
+
+          <div
+            class="
+              absolute
+              inset-[15px]
+              rounded-full
+              bg-[#E4ECFF]
+            "
+          ></div>
+
+
+          <!-- Purple center -->
+
+          <div
+            class="
+              relative
+              flex
+              h-[94px]
+              w-[94px]
+              flex-col
+              items-center
+              justify-center
+              rounded-full
+              bg-eventra
+              shadow-[0_9px_20px_rgba(97,40,255,0.25)]
+              ring-[5px]
+              ring-[#7745FF]
+              ring-offset-[5px]
+              ring-offset-[#6128FF]
+            "
+          >
+
+            <svg
+              class="
+                mb-[4px]
+                h-[25px]
+                w-[25px]
+                text-white
+              "
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2l7 3v6c0 5-3 9-7 11-4-2-7-6-7-11V5l7-3z"
+              ></path>
+
+              <rect
+                x="9"
+                y="10"
+                width="6"
+                height="6"
+                rx="1"
+                fill="#6128FF"
+              ></rect>
+
+              <path
+                d="M10 10V8a2 2 0 014 0v2"
+                fill="none"
+                stroke="#6128FF"
+                stroke-width="1.4"
+              ></path>
+            </svg>
+
+
+            <span
+              class="
+                text-[10px]
+                font-medium
+                tracking-[0.8px]
+                text-white
+              "
+            >
+              PAYSTACK
+            </span>
+
+          </div>
+
+
+          <!-- Orange lightning -->
+
+          <div
+            class="
+              absolute
+              right-[10px]
+              top-[10px]
+              flex
+              h-[23px]
+              w-[23px]
+              items-center
+              justify-center
+              rounded-full
+              bg-[#FFB44C]
+              text-[13px]
+              font-bold
+              text-[#3B2500]
+            "
+          >
+            ⚡
+          </div>
+
+
+          <!-- Purple orbit dot -->
+
+          <div
+            class="
+              absolute
+              bottom-[13px]
+              left-[25px]
+              h-[18px]
+              w-[18px]
+              rounded-full
+              bg-[#5811D9]
+            "
+          ></div>
+
+        </div>
+
+
+        <!-- ======================================================
+             PROCESSING TEXT
+        ======================================================= -->
+
+        <div
+          class="
+            mx-auto
+            mt-[16px]
+            max-w-[560px]
+            text-center
+          "
+        >
+
+          <h1
+            class="
+              text-[29px]
+              font-extrabold
+              leading-[1.1]
+              tracking-[-0.7px]
+              text-ink
+
+              md:text-[36px]
+            "
+          >
+            Processing Payment...
+          </h1>
+
+
+          <p
+            class="
+              mt-[10px]
+              text-[16px]
+              font-normal
+              leading-[1.42]
+              text-[#565E73]
+
+              md:text-[19px]
+              md:leading-[1.45]
+            "
+          >
+            Please do not refresh, close the app, or
+            press back. Your transaction is being
+            authenticated with your bank.
+          </p>
+
+        </div>
+
+
+        <!-- ======================================================
+             PROGRESS
+        ======================================================= -->
+
+        <div
+          class="
+            mt-[35px]
+            w-full
+          "
+        >
+
+          <div
+            class="
+              h-[12px]
+              w-full
+              overflow-hidden
+              rounded-full
+              bg-[#DDE8FC]
+            "
+          >
+
+            <div
+              id="progressBar"
+              class="
+                h-full
+                w-[55%]
+                rounded-full
+                bg-eventra
+                transition-all
+                duration-700
+                ease-out
+              "
+            ></div>
+
+          </div>
+
+
+          <div
+            class="
+              mt-[12px]
+              flex
+              items-center
+              justify-between
+              gap-3
+            "
+          >
+
+            <span
+              class="
+                text-[13px]
+                font-semibold
+                text-[#575F73]
+              "
+            >
+              Authorization step
+            </span>
+
+
+            <span
+              id="estimatedTime"
+              class="
+                whitespace-nowrap
+                text-[13px]
+                font-medium
+                text-eventra
+              "
+            >
+              Est. ~5–10s
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================
+             PROCESSING STEPS
+        ======================================================= -->
+
+        <div
+          class="
+            mt-[36px]
+            w-full
+            rounded-[12px]
+            bg-[#EDF2FF]
+            px-[16px]
+            py-[17px]
+
+            md:px-[19px]
+          "
+        >
+
+          <!-- Step 1 -->
+
+          <div
+            class="
+              flex
+              items-center
+              gap-[11px]
+            "
+          >
+
+            <div
+              class="
+                flex
+                h-[36px]
+                w-[36px]
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-[#5911D8]
+                text-white
+              "
+            >
+
+              <svg
+                class="h-[18px] w-[18px]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12l4 4L19 6"></path>
+              </svg>
+
+            </div>
+
+
+            <span
+              class="
+                text-[16px]
+                font-medium
+                leading-none
+                text-ink
+              "
+            >
+              Payment Request Initiated
+            </span>
+
+          </div>
+
+
+          <!-- Step 2 -->
+
+          <div
+            class="
+              mt-[10px]
+              flex
+              items-center
+              gap-[11px]
+            "
+          >
+
+            <div
+              class="
+                flex
+                h-[36px]
+                w-[36px]
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-eventra
+                text-white
+              "
+            >
+
+              <svg
+                class="
+                  h-[19px]
+                  w-[19px]
+                  animate-spin-slow
+                "
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 3v4"
+                ></path>
+
+                <path
+                  d="M12 17v4"
+                ></path>
+
+                <path
+                  d="M3 12h4"
+                ></path>
+
+                <path
+                  d="M17 12h4"
+                ></path>
+
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="4"
+                ></circle>
+              </svg>
+
+            </div>
+
+
+            <span
+              class="
+                text-[16px]
+                font-semibold
+                leading-none
+                text-eventra
+              "
+            >
+              Bank 3D Secure Authorization
+            </span>
+
+          </div>
+
+
+          <!-- Step 3 -->
+
+          <div
+            class="
+              mt-[10px]
+              flex
+              items-center
+              gap-[11px]
+            "
+          >
+
+            <div
+              class="
+                flex
+                h-[36px]
+                w-[36px]
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-[#D6E4FA]
+                text-[#5C6680]
+              "
+            >
+
+              <svg
+                class="h-[18px] w-[18px]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect
+                  x="4"
+                  y="6"
+                  width="16"
+                  height="12"
+                  rx="2"
+                ></rect>
+
+                <path d="M8 10h8"></path>
+                <path d="M8 14h4"></path>
+              </svg>
+
+            </div>
+
+
+            <span
+              class="
+                text-[16px]
+                font-normal
+                leading-[1.3]
+                text-[#596174]
+              "
+            >
+              Issuing Tech Conference Pass &amp; QR
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ========================================================
+           BANK VERIFICATION
+      ========================================================= -->
+
+      <section
+        class="
+          mt-[24px]
+          flex
+          w-full
+          items-start
+          gap-[13px]
+          rounded-[15px]
+          bg-[#FFDDB0]
+          px-[18px]
+          py-[22px]
+
+          md:px-[22px]
+          md:py-[24px]
+        "
+      >
+
+        <div
+          class="
+            flex
+            h-[48px]
+            w-[48px]
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            bg-[#754700]
+            text-white
+          "
+        >
+
+          <svg
+            class="h-[23px] w-[23px]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+
+            <path
+              d="M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"
+            ></path>
+
+            <path d="M7 9h10"></path>
+
+            <path d="M7 13h6"></path>
+
+            <circle
+              cx="17"
+              cy="15"
+              r="1"
+              fill="currentColor"
+            ></circle>
+
+          </svg>
+
+        </div>
+
+
+        <div class="min-w-0 flex-1">
+
+          <h2
+            class="
+              text-[17px]
+              font-bold
+              leading-[1.2]
+              text-[#432500]
+
+              md:text-[18px]
+            "
+          >
+            Bank Verification Prompt
+          </h2>
+
+
+          <p
+            class="
+              mt-[5px]
+              max-w-[330px]
+              text-[15px]
+              font-normal
+              leading-[1.42]
+              text-[#704A1B]
+
+              md:text-[16px]
+            "
+          >
+            If required by your Nigerian issuing bank,
+            approve the prompt in your banking app
+            or enter the OTP received via SMS.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- ========================================================
+           ORDER SNAPSHOT
+      ========================================================= -->
+
+      <section
+        class="
+          mt-[24px]
+          w-full
+          rounded-[15px]
+          bg-white
+          px-[18px]
+          py-[20px]
+          shadow-[0_3px_10px_rgba(30,43,70,0.045)]
+
+          md:px-6
+          md:py-[22px]
+        "
+      >
+
+        <!-- Header -->
+
+        <div
+          class="
+            flex
+            items-center
+            justify-between
+            gap-3
+          "
+        >
+
+          <div
+            class="
+              flex
+              min-w-0
+              items-center
+              gap-[8px]
+            "
+          >
+
+            <!-- Eventra logo -->
+
+            <div
+              class="
+                flex
+                h-[31px]
+                w-[31px]
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-eventra
+                text-white
+              "
+            >
+
+              <svg
+                class="h-[18px] w-[18px]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="8"
+                ></circle>
+
+                <path d="M8 12h8"></path>
+                <path d="M12 8v8"></path>
+              </svg>
+
+            </div>
+
+
+            <span
+              class="
+                whitespace-nowrap
+                text-[16px]
+                font-medium
+                text-[#4D5264]
+              "
+            >
+              Eventra
+            </span>
+
+
+            <span
+              class="
+                hidden
+                text-[14px]
+                text-[#4D5264]
+
+                sm:inline
+              "
+            >
+              Order Snapshot
+            </span>
+
+          </div>
+
+
+          <span
+            class="
+              shrink-0
+              rounded-full
+              bg-[#DDE1FF]
+              px-[11px]
+              py-[7px]
+              text-[10px]
+              font-bold
+              leading-none
+              tracking-[0.2px]
+              text-[#5D6077]
+            "
+          >
+            LIVE TICKET
+          </span>
+
+        </div>
+
+
+        <!-- Details -->
+
+        <div
+          class="
+            mt-[22px]
+            space-y-[16px]
+          "
+        >
+
+          <!-- Event -->
+
+          <div
+            class="
+              flex
+              items-center
+              justify-between
+              gap-4
+            "
+          >
+
+            <span
+              class="
+                shrink-0
+                text-[14px]
+                text-[#565D71]
+              "
+            >
+              Event
+            </span>
+
+
+            <span
+              id="orderEvent"
+              class="
+                text-right
+                text-[15px]
+                font-semibold
+                text-ink
+              "
+            >
+              Tech Conference 2026
+            </span>
+
+          </div>
+
+
+          <!-- Tier -->
+
+          <div
+            class="
+              flex
+              items-center
+              justify-between
+              gap-4
+            "
+          >
+
+            <span
+              class="
+                shrink-0
+                text-[14px]
+                text-[#565D71]
+              "
+            >
+              Tier
+            </span>
+
+
+            <span
+              id="orderTier"
+              class="
+                text-right
+                text-[15px]
+                font-medium
+                text-ink
+              "
+            >
+              Regular Pass × 1
+            </span>
+
+          </div>
+
+
+          <!-- Provider -->
+
+          <div
+            class="
+              flex
+              items-center
+              justify-between
+              gap-4
+            "
+          >
+
+            <span
+              class="
+                shrink-0
+                text-[14px]
+                text-[#565D71]
+              "
+            >
+              Payment Provider
+            </span>
+
+
+            <span
+              class="
+                flex
+                items-center
+                gap-[7px]
+                text-right
+                text-[15px]
+                font-medium
+                text-ink
+              "
+            >
+
+              <svg
+                class="h-[18px] w-[18px] text-eventra"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                ></rect>
+
+                <path d="M3 10h18"></path>
+              </svg>
+
+              Mastercard •••• 4821
+
+            </span>
+
+          </div>
+
+
+          <!-- Reference -->
+
+          <div
+            class="
+              flex
+              items-center
+              justify-between
+              gap-4
+            "
+          >
+
+            <span
+              class="
+                shrink-0
+                text-[14px]
+                text-[#565D71]
+              "
+            >
+              Reference ID
+            </span>
+
+
+            <span
+              id="referenceId"
+              class="
+                max-w-[205px]
+                truncate
+                rounded-[6px]
+                bg-[#E5EDFF]
+                px-[9px]
+                py-[7px]
+                text-right
+                font-mono
+                text-[12px]
+                font-semibold
+                text-[#59627A]
+              "
+            >
+              EVT-PAY-892401-NG
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Amount -->
+
+        <div
+          class="
+            mt-[28px]
+            flex
+            items-end
+            justify-between
+            gap-4
+            border-t
+            border-[#EDF0F5]
+            pt-[19px]
+          "
+        >
+
+          <span
+            class="
+              text-[18px]
+              font-bold
+              text-ink
+            "
+          >
+            Amount Billed
+          </span>
+
+
+          <div
+            class="
+              text-right
+            "
+          >
+
+            <div
+              id="orderAmount"
+              class="
+                text-[28px]
+                font-extrabold
+                leading-none
+                text-eventra
+
+                md:text-[31px]
+              "
+            >
+              ₦17,625
+            </div>
+
+
+            <div
+              class="
+                mt-[5px]
+                text-[12px]
+                font-semibold
+                text-[#565D71]
+              "
+            >
+              Incl. VAT &amp; Gateway fees
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ========================================================
+           SECURITY FOOTER
+      ========================================================= -->
+
+      <section
+        class="
+          mt-[27px]
+          w-full
+        "
+      >
+
+        <div
+          class="
+            grid
+            grid-cols-3
+            items-start
+            text-center
+          "
+        >
+
+          <!-- PCI -->
+
+          <div
+            class="
+              flex
+              flex-col
+              items-center
+              gap-[5px]
+              border-r
+              border-[#D0D3DD]
+              px-2
+            "
+          >
+
+            <svg
+              class="h-[20px] w-[20px] text-eventra"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z"
+              ></path>
+            </svg>
+
+
+            <span
+              class="
+                text-[12px]
+                font-semibold
+                leading-[1.15]
+                text-[#555D72]
+              "
+            >
+              PCI-DSS<br>
+              Level 1
+            </span>
+
+          </div>
+
+
+          <!-- End-to-End -->
+
+          <div
+            class="
+              flex
+              flex-col
+              items-center
+              gap-[5px]
+              border-r
+              border-[#D0D3DD]
+              px-2
+            "
+          >
+
+            <svg
+              class="h-[20px] w-[20px] text-[#61697B]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 2l8 4v5c0 5-3.5 9-8 11-4.5-2-8-6-8-11V6l8-4z"
+              ></path>
+
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+
+
+            <span
+              class="
+                text-[12px]
+                font-semibold
+                leading-[1.15]
+                text-[#555D72]
+              "
+            >
+              End-to-End<br>
+              Secure
+            </span>
+
+          </div>
+
+
+          <!-- NDPR -->
+
+          <div
+            class="
+              flex
+              flex-col
+              items-center
+              gap-[5px]
+              px-2
+            "
+          >
+
+            <svg
+              class="h-[20px] w-[20px] text-eventra"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2l8 4v5c0 5-3.5 9-8 11-4.5-2-8-6-8-11V6l8-4z"
+              ></path>
+            </svg>
+
+
+            <span
+              class="
+                text-[12px]
+                font-semibold
+                leading-[1.15]
+                text-[#555D72]
+              "
+            >
+              NDPR<br>
+              Compliant
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Support -->
+
+        <button
+          id="supportButton"
+          type="button"
+          class="
+            mx-auto
+            mt-[22px]
+            flex
+            items-center
+            justify-center
+            gap-[7px]
+            border-0
+            bg-transparent
+            text-[15px]
+            font-medium
+            text-eventra
+          "
+        >
+
+          <svg
+            class="h-[19px] w-[19px]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M4 13v-1a8 8 0 0116 0v1"
+            ></path>
+
+            <path
+              d="M4 13a2 2 0 002 2h1v-5H6a2 2 0 00-2 2v1z"
+            ></path>
+
+            <path
+              d="M20 13a2 2 0 00-2-2h-1v5h1a2 2 0 002-2v-1z"
+            ></path>
+
+            <path
+              d="M17 18c-.7 1-2 2-4 2h-1"
+            ></path>
+          </svg>
+
+          Need immediate help? Contact Eventra Support
+
+        </button>
+
+      </section>
+
+    </main>
+
+
+    <!-- ==========================================================
+         TOAST
+    =========================================================== -->
+
+    <div
+      id="toast"
+      class="
+        pointer-events-none
+        fixed
+        bottom-6
+        left-1/2
+        z-[300]
+        max-w-[calc(100%-30px)]
+        -translate-x-1/2
+        translate-y-3
+        rounded-[10px]
+        bg-[#17233B]
+        px-4
+        py-[10px]
+        text-center
+        text-[12px]
+        font-semibold
+        text-white
+        opacity-0
+        transition-all
+        duration-200
+      "
+    ></div>
+
+
+  </div>
+
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+
+  <script src="./script.js?v=20261007-paystack-verify-fix"></script>
+
+</body>
+
+</html>
