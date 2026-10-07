@@ -1838,6 +1838,7 @@
         <!-- REGULAR -->
 
         <div
+          data-ticket-card="regular"
           class="
             mt-2
             rounded-[13px]
@@ -1846,6 +1847,7 @@
             bg-white
             p-3
             shadow-card
+            ticket-card
 
             md:p-5
           "
@@ -1933,7 +1935,7 @@
               "
             >
 
-              ₦15,000
+              <span id="regularPrice">₦15,000</span>
 
             </strong>
 
@@ -2100,12 +2102,16 @@
         <!-- VIP -->
 
         <div
+          data-ticket-card="vip"
           class="
             mt-2
             rounded-[13px]
             bg-white
             p-3
             shadow-card
+            ticket-card
+            border-2
+            border-[#6230F5]
 
             md:p-5
           "
@@ -2192,7 +2198,7 @@
               "
             >
 
-              ₦40,000
+              <span id="vipPrice">₦40,000</span>
 
             </strong>
 
@@ -2252,6 +2258,20 @@
 
           </div>
 
+
+
+          <!-- QUANTITY -->
+
+          <div class="mt-5 flex items-center justify-between">
+            <span class="text-[9px] font-medium text-[#596174] md:text-[11px]">Quantity</span>
+
+            <div class="flex items-center gap-3">
+              <button data-ticket-action="decrease" data-ticket-key="vip" type="button" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDF3FF] text-[16px] font-medium text-[#40506A] active:scale-90">−</button>
+              <span id="vipQuantity" class="min-w-[16px] text-center text-[14px] font-semibold text-[#172033]">0</span>
+              <button data-ticket-action="increase" data-ticket-key="vip" type="button" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#6230F5] text-[16px] font-medium text-white active:scale-90">+</button>
+            </div>
+          </div>
+
         </div>
 
 
@@ -2259,6 +2279,7 @@
         <!-- EXECUTIVE -->
 
         <div
+          data-ticket-card="vvip"
           class="
             mt-2
             rounded-[13px]
@@ -2322,7 +2343,7 @@
               "
             >
 
-              ₦75,000
+              <span id="vvipPrice">₦75,000</span>
 
             </strong>
 
@@ -2366,6 +2387,20 @@
 
             </span>
 
+          </div>
+
+
+
+          <!-- QUANTITY -->
+
+          <div class="mt-5 flex items-center justify-between">
+            <span class="text-[9px] font-medium text-[#596174] md:text-[11px]">Quantity</span>
+
+            <div class="flex items-center gap-3">
+              <button data-ticket-action="decrease" data-ticket-key="vvip" type="button" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDF3FF] text-[16px] font-medium text-[#40506A] active:scale-90">−</button>
+              <span id="vvipQuantity" class="min-w-[16px] text-center text-[14px] font-semibold text-[#172033]">0</span>
+              <button data-ticket-action="increase" data-ticket-key="vvip" type="button" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#6230F5] text-[16px] font-medium text-white active:scale-90">+</button>
+            </div>
           </div>
 
         </div>
@@ -2703,7 +2738,7 @@
        JAVASCRIPT
   ====================================================== -->
 
-  <script src="./script.js"></script>
+  <script src="./script.js?v=20261007-ticket-fix-v4"></script>
 
 </body>
 

@@ -25,7 +25,7 @@ const ROUTES = {
     "../10_Discover%20Event/index.html",
 
   tickets:
-    "../16_Digital%20Ticket/index.html",
+    "../17_MyTicket/index.html",
 
   notifications:
     "../18_Notification/index.html",
@@ -303,7 +303,7 @@ const fallbackEvents = [
 // ============================================================
 
 let allEvents =
-  [...fallbackEvents];
+  [];
 
 let currentVibe =
   "all";
@@ -338,11 +338,16 @@ function formatApiEvent(
     "Lagos";
 
 
+  const firstTicket = Array.isArray(event.ticket_types)
+    ? (event.ticket_types.find(t => Number(t.available ?? t.quantity ?? 1) > 0) || event.ticket_types[0])
+    : null;
+
   const price =
     event.price ||
     event.ticket_price ||
     event.min_price ||
-    "₦5,000";
+    firstTicket?.price ||
+    "Price TBA";
 
 
   const dateValue =
@@ -591,15 +596,10 @@ async function loadEvents() {
 
     }
 
-    else if (
-      Array.isArray(
-        result.data
-      )
-    ) {
-
-      apiEvents =
-        result.data;
-
+    else if (Array.isArray(result.data)) {
+      apiEvents = result.data;
+    } else if (Array.isArray(result.data?.events)) {
+      apiEvents = result.data.events;
     }
 
 
@@ -611,6 +611,7 @@ async function loadEvents() {
         apiEvents.map(
           formatApiEvent
         );
+      updateFeaturedUI(allEvents[0]);
 
     }
 
@@ -623,7 +624,7 @@ async function loadEvents() {
     );
 
     allEvents =
-      [...fallbackEvents];
+      [];
 
   }
 
@@ -632,6 +633,36 @@ async function loadEvents() {
 
 }
 
+
+// ============================================================
+// FEATURED EVENT FROM API
+// ============================================================
+function updateFeaturedUI(event) {
+  if (!event) return;
+  const image = document.getElementById("featuredEventImage");
+  const title = document.getElementById("featuredEventTitle");
+  const venue = document.getElementById("featuredEventVenue");
+  const time = document.getElementById("featuredEventTime");
+  const month = document.getElementById("featuredEventMonth");
+  const day = document.getElementById("featuredEventDay");
+  const priorityImage = document.getElementById("priorityEventImage");
+  const priorityTitle = document.getElementById("priorityEventTitle");
+  const priorityVenue = document.getElementById("priorityEventVenue");
+  const priorityPrice = document.getElementById("priorityEventPrice");
+  if (image) image.src = event.image || image.src;
+  if (title) title.textContent = event.title;
+  if (venue) venue.textContent = `${event.venue}${event.location ? `, ${event.location}` : ""}`;
+  if (time) time.textContent = `${event.date} • ${event.time}`;
+  const rawDate = new Date(event.date);
+  if (!Number.isNaN(rawDate.getTime())) {
+    if (month) month.textContent = rawDate.toLocaleString("en-NG", {month:"short"}).toUpperCase();
+    if (day) day.textContent = rawDate.getDate();
+  }
+  if (priorityImage) priorityImage.src = event.image || priorityImage.src;
+  if (priorityTitle) priorityTitle.textContent = event.title;
+  if (priorityVenue) priorityVenue.textContent = `${event.venue}${event.location ? `, ${event.location}` : ""}`;
+  if (priorityPrice) priorityPrice.textContent = event.price;
+}
 
 // ============================================================
 // RENDER TRENDING
@@ -1327,10 +1358,9 @@ featuredTicketsBtn.addEventListener(
   "click",
   function () {
 
-    localStorage.setItem(
-      "eventra_selected_event",
-      "afrobeats-festival-2026"
-    );
+    const eventId = allEvents[0]?.id;
+    if (!eventId) { showErrorToast("No events are available right now."); return; }
+    localStorage.setItem("eventra_selected_event", String(eventId));
 
 
     window.location.href =
@@ -1348,10 +1378,9 @@ claimBtn.addEventListener(
   "click",
   function () {
 
-    localStorage.setItem(
-      "eventra_selected_event",
-      "tech-conference-2026"
-    );
+    const eventId = allEvents[0]?.id;
+    if (!eventId) { showErrorToast("No events are available right now."); return; }
+    localStorage.setItem("eventra_selected_event", String(eventId));
 
 
     window.location.href =
@@ -1481,6 +1510,24 @@ navButtons.forEach(
 );
 
 
+
+// ============================================================
+// TOP-LEVEL EXPLORE SECTION
+// ============================================================
+function setupExploreSection() {
+  const section = document.getElementById("exploreNearbySection");
+  const curated = document.getElementById("curatedHeader");
+  if (section && curated) curated.parentNode.insertBefore(section, curated);
+}
+
+function showErrorToast(message) {
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  toast.style.cssText = "position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:99999;background:#172033;color:#fff;padding:12px 16px;border-radius:10px;font:600 13px Outfit,Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.18)";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2400);
+}
+
 // ============================================================
 // INITIALIZE
 // ============================================================
@@ -1488,3 +1535,5 @@ navButtons.forEach(
 renderTrendingEvents();
 
 loadEvents();
+
+if (document.readyState !== "loading") setupExploreSection(); else document.addEventListener("DOMContentLoaded", setupExploreSection);

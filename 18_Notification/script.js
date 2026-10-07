@@ -557,3 +557,79 @@ notificationCards.forEach(
 updateUnreadCount();
 
 updateSectionVisibility();
+/* =========================================================
+   BACKEND — USER NOTIFICATIONS
+========================================================= */
+const EVENTRA_API_BASE = "https://eventra-backend-aidf.onrender.com/api";
+
+function getAuthToken() {
+    return localStorage.getItem("eventra_token") || localStorage.getItem("access_token") || sessionStorage.getItem("eventra_token") || sessionStorage.getItem("access_token") || "";
+}
+
+function getUserId() {
+    try {
+        const user = JSON.parse(localStorage.getItem("eventra_user") || sessionStorage.getItem("eventra_user") || "null");
+        return user?.id || user?.user_id || "";
+    } catch (_) { return ""; }
+}
+
+function notificationIcon(type) {
+    const t = String(type || "").toLowerCase();
+    if (t.includes("payment")) return "💳";
+    if (t.includes("ticket") || t.includes("booking")) return "🎟️";
+    if (t.includes("event")) return "📅";
+    if (t.includes("refund")) return "↩️";
+    return "🔔";
+}
+
+function renderBackendNotifications(items) {
+    if (!todaySection || !earlierSection) return;
+    const normalized = items.map(n => ({
+        id: n.id || n.notification_id || crypto.randomUUID(),
+        title: n.title || n.type || "Eventra notification",
+        description: n.message || n.description || "You have a new Eventra update.",
+        created_at: n.created_at || n.timestamp || n.createdAt || new Date().toISOString(),
+        unread: n.is_read === false || n.read === false || n.unread === true,
+        type: n.type || "notification"
+    }));
+
+    const make = n => {
+        const date = new Date(n.created_at);
+        const time = Number.isNaN(date.getTime()) ? "" : date.toLocaleString("en-NG", { day:"numeric", month:"short", hour:"numeric", minute:"2-digit" });
+        return `<article class="notification-card ${n.unread ? "unread" : "read"}" data-id="${String(n.id).replace(/[^a-zA-Z0-9_-]/g, "-")}" data-unread="${n.unread}" data-type="${String(n.type).replace(/[^a-zA-Z0-9_-]/g, "-")}">
+          <div class="notification-icon bg-[#E7D9FF] text-[#5B00E8]">${notificationIcon(n.type)}</div>
+          <div class="min-w-0 flex-1"><div class="notification-title-text">${String(n.title).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}</div><div class="notification-time">${time}</div><div class="notification-description">${String(n.description).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}</div></div>
+          ${n.unread ? '<span class="unread-dot"></span>' : ''}
+        </article>`;
+    };
+
+    const today = [];
+    const earlier = [];
+    const now = new Date();
+    normalized.forEach(n => {
+        const d = new Date(n.created_at);
+        if (!Number.isNaN(d.getTime()) && d.toDateString() === now.toDateString()) today.push(n); else earlier.push(n);
+    });
+    todaySection.querySelector(".notification-list")?.replaceChildren();
+    earlierSection.querySelector(".notification-list")?.replaceChildren();
+    if (todaySection.querySelector(".notification-list")) todaySection.querySelector(".notification-list").innerHTML = today.length ? today.map(make).join("") : '<div class="p-6 text-center text-[#69738A]">No new notifications.</div>';
+    if (earlierSection.querySelector(".notification-list")) earlierSection.querySelector(".notification-list").innerHTML = earlier.length ? earlier.map(make).join("") : '<div class="p-6 text-center text-[#69738A]">No earlier notifications.</div>';
+    updateUnreadCount();
+}
+
+async function loadBackendNotifications() {
+    const token = getAuthToken();
+    const userId = getUserId();
+    if (!token || !userId) return;
+    try {
+        const response = await fetch(`${EVENTRA_API_BASE}/users/${encodeURIComponent(userId)}/notifications`, { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } });
+        if (!response.ok) throw new Error(`Notification request failed: ${response.status}`);
+        const result = await response.json();
+        const items = Array.isArray(result) ? result : Array.isArray(result.data) ? result.data : Array.isArray(result.data?.notifications) ? result.data.notifications : Array.isArray(result.notifications) ? result.notifications : [];
+        renderBackendNotifications(items);
+    } catch (error) {
+        console.warn("Could not load backend notifications:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadBackendNotifications);

@@ -682,23 +682,8 @@ async function loginUser(
 
     }
 
-    if (
-      response.status === 403
-    ) {
-
-      message =
-        "Your email has not been verified. Please verify your account before signing in.";
-
-      localStorage.setItem(
-        "eventra_email",
-        email
-      );
-
-      localStorage.setItem(
-        "eventra_unverified_login",
-        "true"
-      );
-
+    if (response.status === 403) {
+      message = data?.message || "This account is not allowed to sign in yet. Please contact support.";
     }
 
 
@@ -841,8 +826,14 @@ loginForm.addEventListener(
       setTimeout(
         function () {
 
-          window.location.href =
-            ROUTES.home;
+          const returnTarget = new URLSearchParams(window.location.search).get("return");
+          if (returnTarget === "checkout") {
+            window.location.href = "../12_Event%20Checkout%20Order%20Summary/index.html";
+          } else if (returnTarget === "payment") {
+            window.location.href = "../13_Event%20Payment%20Method/index.html";
+          } else {
+            window.location.href = ROUTES.home;
+          }
 
         },
         150

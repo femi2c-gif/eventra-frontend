@@ -737,7 +737,7 @@ openGatePassButton?.addEventListener(
             function () {
 
                 openDigitalTicket(
-                    "EVT-928374-TC26"
+                    sessionStorage.getItem("eventra_selected_ticket_id") || localStorage.getItem("eventra_selected_ticket_id") || null
                 );
 
             },
@@ -792,7 +792,7 @@ document
                 function () {
 
                     openDigitalTicket(
-                        "EVT-928374-TC26"
+                        sessionStorage.getItem("eventra_selected_ticket_id") || localStorage.getItem("eventra_selected_ticket_id") || null
                     );
 
                 }
@@ -1131,6 +1131,43 @@ document
 
 
 /* =========================================================
+   RENDER REAL USER TICKETS
+========================================================= */
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+}
+
+function renderRealTickets(tickets) {
+    if (!upcomingContent || !pastContent) return;
+    const now = Date.now();
+    const upcoming = tickets.filter(t => {
+        const d = new Date(t.event?.start_date || t.event_date || t.start_date || t.date || t.event?.date || 0).getTime();
+        return !d || d >= now || String(t.status || "").toLowerCase() === "valid";
+    });
+    const past = tickets.filter(t => !upcoming.includes(t));
+
+    const card = (t) => {
+        const event = t.event || {};
+        const ticketId = t.id || t.ticket_id || t.ticket_code || "";
+        const title = t.event_name || event.title || event.name || "Event";
+        const date = t.event_date || event.date || event.start_date || "Date TBA";
+        const venue = t.venue || event.venue || event.location || "Venue TBA";
+        const code = t.ticket_code || ticketId || "Ticket";
+        const status = t.status || "valid";
+        return `<article class="ticket-card rounded-[15px] bg-[#EEF3FF] p-[18px] ticket-shadow overflow-hidden" data-search="${escapeHtml(`${title} ${venue} ${code}`)}">
+          <div class="flex items-center justify-between gap-3 text-[14px] font-medium"><span>${escapeHtml(String(status).toUpperCase())}</span><span class="text-[#30A77E]">${status === "used" ? "Used" : "Ready"}</span></div>
+          <div class="mt-5"><h2 class="text-[18px] font-medium">${escapeHtml(title)}</h2><p class="mt-2 text-[15px]">${escapeHtml(date)}</p><p class="mt-2 text-[15px]">${escapeHtml(venue)}</p></div>
+          <div class="mt-6 flex items-end justify-between gap-4"><div><p class="text-[12px] tracking-[.4px]">TICKET ID</p><p class="mt-1 text-[15px] font-medium text-[#43506A]">${escapeHtml(code)}</p></div><button type="button" class="real-ticket-open h-[46px] rounded-[10px] bg-[#5B00E8] px-5 text-white font-medium" data-ticket-id="${escapeHtml(ticketId)}">View Ticket</button></div>
+        </article>`;
+    };
+
+    upcomingContent.innerHTML = upcoming.length ? upcoming.map(card).join("") : '<div class="rounded-[14px] bg-white p-6 text-center text-[#69738A]">You have no upcoming tickets yet.</div>';
+    pastContent.innerHTML = past.length ? past.map(card).join("") : '<div class="rounded-[14px] bg-white p-6 text-center text-[#69738A]">You have no past tickets.</div>';
+    document.querySelectorAll(".real-ticket-open").forEach(btn => btn.addEventListener("click", () => openDigitalTicket(btn.dataset.ticketId)));
+    applySearch();
+}
+
+/* =========================================================
    BACKEND — USER TICKETS
 ========================================================= */
 
@@ -1144,6 +1181,7 @@ async function loadUserTickets() {
 
 
     if (!userId || !token) {
+        renderRealTickets([]);
         return;
     }
 
@@ -1186,10 +1224,7 @@ async function loadUserTickets() {
             );
 
 
-        console.log(
-            "Eventra tickets:",
-            tickets
-        );
+        renderRealTickets(tickets);
 
 
     } catch (error) {
@@ -1258,7 +1293,8 @@ document.addEventListener(
         setActiveTab(
             "upcoming"
         );
-
+        if (upcomingContent) upcomingContent.innerHTML = '<div class="rounded-[14px] bg-white p-6 text-center text-[#69738A]">Loading your tickets...</div>';
+        if (pastContent) pastContent.innerHTML = '<div class="rounded-[14px] bg-white p-6 text-center text-[#69738A]">Loading your tickets...</div>';
         loadUserTickets();
 
     }

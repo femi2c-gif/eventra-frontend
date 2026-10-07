@@ -25,7 +25,7 @@ const ROUTES = {
         "../05_Home/index.html",
 
     myTickets:
-        "../16_Digital%20Ticket/index.html"
+        "../17_MyTicket/index.html"
 
 };
 
@@ -35,9 +35,8 @@ const ROUTES = {
 // ============================================================
 
 const viewDigitalPassButton =
-    document.getElementById(
-        "viewDigitalPassButton"
-    );
+    document.getElementById("viewDigitalPassButton") ||
+    document.getElementById("fullPassButton");
 
 
 const toast =
@@ -200,6 +199,52 @@ function showToast(
 
 }
 
+
+
+// ============================================================
+// VERIFY RETURNED PAYSTACK REFERENCE
+// ============================================================
+async function verifyReturnedPayment() {
+    const params = new URLSearchParams(window.location.search);
+    const reference = params.get("reference") || params.get("trxref") || sessionStorage.getItem("eventra_payment_reference") || localStorage.getItem("eventra_payment_reference") || "";
+    const token = getToken();
+    if (!reference || !token) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/payments/verify`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({ reference })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result?.message || "Payment verification failed");
+
+        const data = result?.data || result;
+        const bookingId = data?.booking_id || data?.booking?.id || sessionStorage.getItem("eventra_booking_id") || "";
+        const ticketId = data?.ticket_id || data?.ticket?.id || data?.tickets?.[0]?.id || "";
+
+        if (bookingId) {
+            sessionStorage.setItem("eventra_booking_id", String(bookingId));
+            localStorage.setItem("eventra_booking_id", String(bookingId));
+        }
+        if (ticketId) {
+            sessionStorage.setItem("eventra_ticket_id", String(ticketId));
+            sessionStorage.setItem("eventra_selected_ticket_id", String(ticketId));
+            localStorage.setItem("eventra_ticket_id", String(ticketId));
+            localStorage.setItem("eventra_selected_ticket_id", String(ticketId));
+        }
+        sessionStorage.setItem("eventra_payment_reference", reference);
+        localStorage.setItem("eventra_payment_reference", reference);
+        sessionStorage.setItem("eventra_payment_verification", JSON.stringify(result));
+    } catch (error) {
+        console.error("Returned payment verification failed:", error);
+        showToast("Payment was returned, but verification is still pending. Please check My Tickets shortly.");
+    }
+}
 
 // ============================================================
 // GET PAYMENT DATA
@@ -1212,6 +1257,53 @@ function setupKeyboardAccess() {
 }
 
 
+
+
+/* ============================================================
+   AUTO-ADVANCE TO DIGITAL TICKET
+   Screen 15 is the confirmed success state. After the user has
+   had a moment to see the confirmation, continue to Screen 16.
+   The "View Full Digital Pass" button remains available for
+   immediate navigation.
+============================================================ */
+
+function setupAutomaticDigitalTicketTransition() {
+    const paymentVerification =
+        sessionStorage.getItem("eventra_payment_verification") ||
+        localStorage.getItem("eventra_payment_verification");
+
+    const reference =
+        new URLSearchParams(window.location.search).get("reference") ||
+        sessionStorage.getItem("eventra_payment_reference") ||
+        localStorage.getItem("eventra_payment_reference");
+
+    // Only auto-advance when Screen 14 has already verified payment.
+    if (!paymentVerification || !reference) {
+        return;
+    }
+
+    let verification = null;
+    try {
+        verification = JSON.parse(paymentVerification);
+    } catch (_) {}
+
+    const status = String(
+        verification?.data?.status ||
+        verification?.status ||
+        ""
+    ).toLowerCase();
+
+    if (!["completed", "success", "successful"].includes(status)) {
+        return;
+    }
+
+    // Give the success screen time to render and be seen.
+    setTimeout(() => {
+        if (document.visibilityState !== "visible") return;
+        openDigitalTicket();
+    }, 4000);
+}
+
 // ============================================================
 // INITIALIZE
 // ============================================================
@@ -1251,6 +1343,8 @@ document.addEventListener(
 
         setupViewDigitalPassButton();
 
+        setupAutomaticDigitalTicketTransition();
+
         setupReceiptPDF();
 
         setupWalletButton();
@@ -1267,3 +1361,6 @@ document.addEventListener(
 
     }
 );
+
+// Payment verification is completed on Screen 14 before this screen is shown.
+

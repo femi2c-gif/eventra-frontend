@@ -25,7 +25,7 @@ const ROUTES = {
         "../15_My Tickets/index.html",
 
     profile:
-        "../17_Profile/index.html"
+        "../19_User%20Profile/index.html"
 
 };
 
@@ -1042,14 +1042,8 @@ function renderQRCode(
         image.onerror =
             function () {
 
-                console.warn(
-                    "Backend QR could not be loaded. Generating fallback QR."
-                );
-
-
-                generateFallbackQR(
-                    ticket
-                );
+                console.warn("Backend QR could not be loaded.");
+                showQrUnavailable();
 
             };
 
@@ -1072,10 +1066,15 @@ function renderQRCode(
         --------------------------------------------------------
     */
 
-    generateFallbackQR(
-        ticket
-    );
+    showQrUnavailable();
 
+}
+
+
+function showQrUnavailable() {
+    const container = document.getElementById("qrCode");
+    if (!container) return;
+    container.innerHTML = `<div class="flex h-full w-full items-center justify-center rounded-[8px] bg-[#F5F5FA] px-4 text-center text-[12px] font-medium text-[#626A7D]">QR code unavailable. Please refresh the ticket.</div>`;
 }
 
 
@@ -1434,33 +1433,13 @@ async function loadTicket() {
     */
 
     if (!ticketId) {
-
-        console.warn(
-            "No ticket ID found."
-        );
-
-
-        const cached =
-            loadCachedTicket();
-
-
-        if (cached) {
-
-            renderTicket(
-                cached
-            );
-
-        } else {
-
-            renderTicket(
-                defaultTicket
-            );
-
+        console.warn("No ticket ID found.");
+        const app = document.getElementById("app");
+        if (app) {
+            app.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;font-family:Outfit,Arial,sans-serif;background:#F7F8FD"><div><div style="font-size:44px">🎟️</div><h1 style="font-size:22px;color:#172033;margin:12px 0 8px">No ticket selected</h1><p style="color:#69738A;max-width:320px;margin:0 auto 20px">Purchase a ticket first or open a ticket from My Tickets.</p><button type="button" id="openMyTicketsEmpty" style="height:46px;padding:0 20px;border:0;border-radius:12px;background:#5B00E8;color:#fff;font:600 14px Outfit,Arial,sans-serif">Open My Tickets</button></div></div>`;
+            document.getElementById("openMyTicketsEmpty")?.addEventListener("click", () => window.location.assign("../17_MyTicket/index.html"));
         }
-
-
         return;
-
     }
 
 
@@ -1615,18 +1594,13 @@ async function loadTicket() {
         }
 
 
-        /*
-            Last fallback.
-        */
+        const app = document.getElementById("app");
+        if (app) {
+            app.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;font-family:Outfit,Arial,sans-serif;background:#F7F8FD"><div><div style="font-size:44px">⚠️</div><h1 style="font-size:22px;color:#172033;margin:12px 0 8px">Ticket unavailable</h1><p style="color:#69738A;max-width:340px;margin:0 auto 20px">We could not load this ticket from Eventra. Please try again from My Tickets.</p><button type="button" id="openMyTicketsError" style="height:46px;padding:0 20px;border:0;border-radius:12px;background:#5B00E8;color:#fff;font:600 14px Outfit,Arial,sans-serif">Open My Tickets</button></div></div>`;
+            document.getElementById("openMyTicketsError")?.addEventListener("click", () => window.location.assign("../17_MyTicket/index.html"));
+        }
 
-        renderTicket(
-            defaultTicket
-        );
-
-
-        showToast(
-            "Ticket could not be refreshed. Showing ticket preview."
-        );
+        showToast("Ticket could not be loaded.");
 
     }
 

@@ -53,8 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const token =
-        localStorage.getItem("token") ||
         localStorage.getItem("eventra_token") ||
+        localStorage.getItem("access_token") ||
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("eventra_token") ||
+        sessionStorage.getItem("access_token") ||
         sessionStorage.getItem("token") ||
         "";
 
@@ -343,323 +346,145 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ============================================================
-    // INITIAL STATE
+    // REAL PAYMENT RETURN / VERIFICATION
     // ============================================================
 
-    updateProgress(
-        10,
-        "Initializing payment..."
-    );
+    async function verifyPayment(reference) {
+        if (!reference || !token) return false;
 
-
-    setStepState(
-        paymentRequestStep,
-        "active"
-    );
-
-
-    setStepState(
-        secureAuthorizationStep,
-        "pending"
-    );
-
-
-    setStepState(
-        ticketGenerationStep,
-        "pending"
-    );
-
-
-    // ============================================================
-    // PROCESSING ANIMATION
-    //
-    // Total frontend demo processing time:
-    // approximately 7 seconds.
-    // ============================================================
-
-    const processingSteps = [
-
-        {
-            delay: 700,
-            progress: 25,
-            status: "Payment request initiated...",
-            authorization: "Initializing authorization..."
-        },
-
-        {
-            delay: 1800,
-            progress: 48,
-            status: "Payment request confirmed...",
-            authorization: "Connecting to bank..."
-        },
-
-        {
-            delay: 3000,
-            progress: 68,
-            status: "Bank authorization in progress...",
-            authorization: "Awaiting bank confirmation..."
-        },
-
-        {
-            delay: 4400,
-            progress: 82,
-            status: "Bank authorization successful...",
-            authorization: "Authorization approved"
-        },
-
-        {
-            delay: 5600,
-            progress: 94,
-            status: "Generating your ticket...",
-            authorization: "Preparing ticket & QR..."
-        },
-
-        {
-            delay: 6500,
-            progress: 100,
-            status: "Payment confirmed!",
-            authorization: "Payment successful"
-        }
-
-    ];
-
-
-    processingSteps.forEach(
-        (step) => {
-
-            setTimeout(
-                () => {
-
-                    updateProgress(
-                        step.progress,
-                        step.status
-                    );
-
-
-                    if (
-                        authorizationStatus
-                    ) {
-
-                        authorizationStatus.textContent =
-                            step.authorization;
-
-                    }
-
-
-                    // ------------------------------------------------
-                    // PAYMENT REQUEST COMPLETED
-                    // ------------------------------------------------
-
-                    if (
-                        step.progress >= 48
-                    ) {
-
-                        setStepState(
-                            paymentRequestStep,
-                            "completed"
-                        );
-
-                        setStepState(
-                            secureAuthorizationStep,
-                            "active"
-                        );
-
-                    }
-
-
-                    // ------------------------------------------------
-                    // BANK AUTHORIZATION COMPLETED
-                    // ------------------------------------------------
-
-                    if (
-                        step.progress >= 82
-                    ) {
-
-                        setStepState(
-                            secureAuthorizationStep,
-                            "completed"
-                        );
-
-                        setStepState(
-                            ticketGenerationStep,
-                            "active"
-                        );
-
-                    }
-
-
-                    // ------------------------------------------------
-                    // EVERYTHING COMPLETED
-                    // ------------------------------------------------
-
-                    if (
-                        step.progress === 100
-                    ) {
-
-                        setStepState(
-                            ticketGenerationStep,
-                            "completed"
-                        );
-
-
-                        if (authorizationStatus) {
-
-                            authorizationStatus.textContent =
-                                "Payment confirmed";
-
-                        }
-
-                    }
-
+        try {
+            const response = await fetch(`${API_BASE_URL}/payments/verify`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
-                step.delay
-            );
+                body: JSON.stringify({ reference })
+            });
 
-        }
-    );
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) return false;
 
+            const data = result?.data || result;
+            const bookingId =
+                data?.booking_id ||
+                data?.booking?.id ||
+                sessionStorage.getItem("eventra_booking_id") ||
+                localStorage.getItem("eventra_booking_id") ||
+                "";
 
-    // ============================================================
-    // AUTOMATIC REDIRECT
-    //
-    // Wait a little after 100% so the user sees the completed
-    // processing state.
-    // ============================================================
+            const ticketId =
+                data?.ticket_id ||
+                data?.ticket?.id ||
+                data?.tickets?.[0]?.id ||
+                sessionStorage.getItem("eventra_ticket_id") ||
+                localStorage.getItem("eventra_ticket_id") ||
+                "";
 
-    setTimeout(
-        () => {
-
-            updateProgress(
-                100,
-                "Payment successful!"
-            );
-
-
-            if (authorizationStatus) {
-
-                authorizationStatus.textContent =
-                    "Payment confirmed";
-
+            if (bookingId) {
+                sessionStorage.setItem("eventra_booking_id", String(bookingId));
+                localStorage.setItem("eventra_booking_id", String(bookingId));
             }
 
+            if (ticketId) {
+                sessionStorage.setItem("eventra_selected_ticket_id", String(ticketId));
+                sessionStorage.setItem("eventra_ticket_id", String(ticketId));
+                localStorage.setItem("eventra_selected_ticket_id", String(ticketId));
+                localStorage.setItem("eventra_ticket_id", String(ticketId));
+            }
 
-            showToast(
-                "Payment successful. Preparing your ticket..."
+            sessionStorage.setItem("eventra_payment_reference", String(reference));
+            localStorage.setItem("eventra_payment_reference", String(reference));
+            sessionStorage.setItem("eventra_payment_verification", JSON.stringify(result));
+
+            const paymentStatus = String(
+                data?.status ||
+                data?.payment_status ||
+                result?.status ||
+                ""
+            ).toLowerCase();
+
+            return (
+                paymentStatus === "completed" ||
+                paymentStatus === "success" ||
+                paymentStatus === "successful" ||
+                result?.status === "success"
             );
+        } catch (error) {
+            console.error("Payment verification error:", error);
+            return false;
+        }
+    }
 
+    updateProgress(35, "Waiting for secure payment confirmation...");
+    setStepState(paymentRequestStep, "completed");
+    setStepState(secureAuthorizationStep, "active");
+    setStepState(ticketGenerationStep, "pending");
 
-            // Give the user a short moment to see the
-            // completed state.
+    if (authorizationStatus) authorizationStatus.textContent = "Waiting for Paystack confirmation";
 
-            setTimeout(
-                () => {
+    const params = new URLSearchParams(window.location.search);
+    const returnedReference =
+        params.get("reference") ||
+        params.get("trxref") ||
+        sessionStorage.getItem("eventra_payment_reference") ||
+        "";
 
-                    window.location.href =
-                        SUCCESS_PAGE;
+    if (returnedReference) {
+        // Paystack can finish successfully before its hosted page redirects.
+        // Give the backend a few chances to report the completed transaction.
+        (async () => {
+            let verified = false;
+            for (let attempt = 1; attempt <= 5; attempt += 1) {
+                verified = await verifyPayment(returnedReference);
+                if (verified) break;
+                if (attempt < 5) {
+                    updateProgress(45 + attempt * 8, "Confirming payment with Paystack...");
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
 
-                },
-                900
-            );
+            if (verified) {
+                sessionStorage.removeItem("eventra_paystack_active");
+                sessionStorage.removeItem("eventra_paystack_started_at");
+                updateProgress(100, "Payment confirmed!");
+                setStepState(secureAuthorizationStep, "completed");
+                setStepState(ticketGenerationStep, "completed");
+                if (authorizationStatus) authorizationStatus.textContent = "Payment confirmed";
+                setTimeout(() => window.location.assign(`${SUCCESS_PAGE}?reference=${encodeURIComponent(returnedReference)}`), 500);
+            } else {
+                console.error(
+                    "[Eventra] Payment verification did not return a completed status.",
+                    {
+                        reference: returnedReference,
+                        bookingId: sessionStorage.getItem("eventra_booking_id") || "",
+                        verification: sessionStorage.getItem("eventra_payment_verification") || null
+                    }
+                );
 
-        },
-        7000
-    );
+                // Do NOT send the user back to Screen 13 automatically.
+                // Keep the user on Processing so the payment flow does not
+                // loop back to the previous screen after a Paystack success.
+                updateProgress(100, "Payment confirmation is taking longer than expected.");
+                if (authorizationStatus) {
+                    authorizationStatus.textContent =
+                        "We are still confirming your payment. Please wait or try again.";
+                }
+                showToast("We are still confirming your payment.");
+            }
+        })();
+    } else {
+        // This screen is retained as a real-payment return state. It must never fabricate a successful payment.
+        setTimeout(() => {
+            if (progressStatus) progressStatus.textContent = "Waiting for Paystack to return your payment result...";
+        }, 500);
+    }
 
 
     // ============================================================
     // OPTIONAL REAL PAYMENT VERIFICATION
-    //
-    // This function is NOT automatically used in the demo timer.
-    //
-    // When the real Paystack flow is connected, this function
-    // can be called after Paystack returns the payment reference.
-    // ============================================================
-
-    async function verifyPayment(
-        reference
-    ) {
-
-        if (
-            !reference ||
-            !token
-        ) {
-
-            return false;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/payments/verify`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Authorization":
-                                `Bearer ${token}`,
-
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-                                reference:
-                                    reference
-                            })
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                return false;
-
-            }
-
-
-            const result =
-                await response.json();
-
-
-            if (
-                result &&
-                result.status === "success" &&
-                result.data &&
-                result.data.status === "completed"
-            ) {
-
-                sessionStorage.setItem(
-                    "eventra_payment_reference",
-                    reference
-                );
-
-
-                return true;
-
-            }
-
-
-            return false;
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Payment verification error:",
-                error
-            );
-
-
-            return false;
-
-        }
-
-    }
+    // Verification is handled above when Paystack returns a reference.
 
 
     // ============================================================

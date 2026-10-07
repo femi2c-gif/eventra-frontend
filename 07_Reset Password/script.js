@@ -6,7 +6,7 @@
 const ROUTES = {
 
   signIn:
-    "../09_Sign%20In/index.html",
+    "../09_Sign_In/index.html",
 
   success:
     "../08_Password%20Reset%20Successful/index.html"

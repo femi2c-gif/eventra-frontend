@@ -276,9 +276,7 @@ function normalizeEvent(event, index) {
       event.image ||
       event.image_url ||
       event.cover_image ||
-      localEvents[
-        index % localEvents.length
-      ].image
+      "../05_Home/Event Visual.png"
 
   };
 
@@ -327,13 +325,10 @@ async function loadEvents() {
       apiEvents =
         data.events;
 
-    } else if (
-      Array.isArray(data.data)
-    ) {
-
-      apiEvents =
-        data.data;
-
+    } else if (Array.isArray(data.data)) {
+      apiEvents = data.data;
+    } else if (Array.isArray(data.data?.events)) {
+      apiEvents = data.data.events;
     }
 
 

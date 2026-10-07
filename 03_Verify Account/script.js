@@ -10,7 +10,7 @@ const API_BASE_URL =
 const ROUTES = {
   back: "../02_Create%20Account/index.html",
   verified: "../04_Account%20Verified/index.html",
-  signIn: "../09_Sign%20In/index.html"
+  signIn: "../09_Sign_In/index.html"
 };
 
 const backBtn = document.getElementById("backBtn");
