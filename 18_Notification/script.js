@@ -617,6 +617,12 @@ function renderBackendNotifications(items) {
     updateUnreadCount();
 }
 
+document.getElementById("notificationBackButton")?.addEventListener("click", () => {
+    if (window.history.length > 1) window.history.back();
+    else window.location.assign("../05_Home/index.html");
+});
+
+
 async function loadBackendNotifications() {
     const token = getAuthToken();
     const userId = getUserId();

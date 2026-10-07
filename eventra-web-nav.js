@@ -23,7 +23,7 @@
     const style = document.createElement("style");
     style.textContent = `
       @media (min-width: 768px) {
-        .bottom-nav, nav.fixed.bottom-0 { display:none !important; }
+        .bottom-nav, .bottom-navigation, nav.fixed.bottom-0 { display:none !important; }
         #eventraDesktopNav { display:block !important; }
       }
       @media (max-width: 767px) { #eventraDesktopNav { display:none !important; } }

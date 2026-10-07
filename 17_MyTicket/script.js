@@ -964,6 +964,12 @@ document
     );
 
 
+document.getElementById("myTicketsBackButton")?.addEventListener("click", () => {
+    if (window.history.length > 1) window.history.back();
+    else window.location.assign("../05_Home/index.html");
+});
+
+
 /* =========================================================
    LOGO
 ========================================================= */

@@ -127,6 +127,12 @@ document
 
 
 
+document.getElementById("profileBackButton")?.addEventListener("click", () => {
+    if (window.history.length > 1) window.history.back();
+    else window.location.assign("../05_Home/index.html");
+});
+
+
 /* =========================================================
    BACKEND PROFILE
 ========================================================= */
@@ -239,15 +245,17 @@ document
 
                     case "personal":
 
-                        openProfileEditor();
+                        window.location.assign(
+                            new URL("./profile-pages/Personal%20Information/index.html", window.location.href).href
+                        );
 
                         break;
 
 
                     case "payment-history":
 
-                        showToast(
-                            "Payment History & Orders"
+                        window.location.assign(
+                            new URL("./profile-pages/Payment%20History/index.html", window.location.href).href
                         );
 
                         break;
@@ -255,8 +263,8 @@ document
 
                     case "payment-methods":
 
-                        showToast(
-                            "Linked Payment Methods"
+                        window.location.assign(
+                            new URL("./profile-pages/Linked%20Payments/index.html", window.location.href).href
                         );
 
                         break;
@@ -265,10 +273,7 @@ document
                     case "notifications":
 
                         window.location.assign(
-                            new URL(
-                                ROUTES.notifications,
-                                window.location.href
-                            ).href
+                            new URL("./profile-pages/Notification%20Preferences/index.html", window.location.href).href
                         );
 
                         break;
@@ -276,8 +281,8 @@ document
 
                     case "saved-events":
 
-                        showToast(
-                            "Saved Events & Wishlist"
+                        window.location.assign(
+                            new URL("./profile-pages/Saved%20Events/index.html", window.location.href).href
                         );
 
                         break;
@@ -285,8 +290,8 @@ document
 
                     case "security":
 
-                        showToast(
-                            "Account Security & 2FA"
+                        window.location.assign(
+                            new URL("./profile-pages/Account%20Security/index.html", window.location.href).href
                         );
 
                         break;
@@ -294,8 +299,8 @@ document
 
                     case "support":
 
-                        showToast(
-                            "Help & 24/7 Support"
+                        window.location.assign(
+                            new URL("./profile-pages/Help/index.html", window.location.href).href
                         );
 
                         break;
